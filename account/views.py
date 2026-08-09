@@ -110,7 +110,7 @@ def verify_iris_image(iris_image, user):
     uploaded_image_path = fs.url(filename)  # URL path (relative)
 
     # Normalize the path separators (for cross-platform compatibility)
-    uploaded_image_abs_path = os.path.join("E:\\e-voting\\", uploaded_image_path.lstrip('/'))
+    uploaded_image_abs_path = os.path.join(settings.BASE_DIR, uploaded_image_path.lstrip('/'))
     uploaded_image_abs_path = os.path.normpath(uploaded_image_abs_path)  # Normalize path separators
 
     print(f"Uploaded image path: {uploaded_image_abs_path}")  # Debug: Print the uploaded image path
@@ -121,16 +121,18 @@ def verify_iris_image(iris_image, user):
     if uploaded_image is None:
         print("Error: Unable to load the uploaded image.")
         # Delete the temporary uploaded image
-        os.remove(uploaded_image_abs_path)
+        if os.path.exists(uploaded_image_abs_path):
+            os.remove(uploaded_image_abs_path)
         return False
 
     # Step 2: Get the registered image path from the Voter model
     try:
         voter = Voter.objects.get(admin=user)  # Get the Voter record associated with the user
-        registered_image_path = os.path.join("E:\\e-voting\\", voter.iris_image.url.lstrip('/'))  # Path to the registered Iris image
+        registered_image_path = os.path.join(settings.BASE_DIR, voter.iris_image.url.lstrip('/'))  # Path to the registered Iris image
     except Voter.DoesNotExist:
         print("Error: Voter not found for the user.")
-        os.remove(uploaded_image_abs_path)
+        if os.path.exists(uploaded_image_abs_path):
+            os.remove(uploaded_image_abs_path)
         return False
 
     # Normalize the registered image path (same as uploaded image)
@@ -143,7 +145,8 @@ def verify_iris_image(iris_image, user):
 
     if registered_image is None:
         print("Error: Unable to load the registered image.")
-        os.remove(uploaded_image_abs_path)
+        if os.path.exists(uploaded_image_abs_path):
+            os.remove(uploaded_image_abs_path)
         return False
 
     # Step 4: Resize both images to the same size
@@ -156,7 +159,8 @@ def verify_iris_image(iris_image, user):
     print(f"Non-zero difference: {non_zero_diff}")  # Debug: Print the pixel difference
 
     # Delete the temporary uploaded image after comparison
-    os.remove(uploaded_image_abs_path)
+    if os.path.exists(uploaded_image_abs_path):
+        os.remove(uploaded_image_abs_path)
 
     # Threshold the difference to consider it as a valid match
     if non_zero_diff < 1000:  # This threshold is an example; you can adjust it based on the images
@@ -187,7 +191,7 @@ def account_register(request):
             user.save()
             voter.save()
 
-            messages.success(request, "Account created. You can login now!")
+            messages.success(request, f"Account registered successfully! Your Smart ID is: {voter.smartid}. (Please copy this Smart ID to Sign In)")
             return redirect(reverse('account_login'))
         else:
             messages.error(request, "Provided data failed validation")

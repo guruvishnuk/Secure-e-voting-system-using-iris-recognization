@@ -1,69 +1,53 @@
 {% load static %}
-    <!-- jQuery 3 -->
-    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'bower_components/jquery-ui/jquery-ui.min.js' %}"></script>
-    <!-- Bootstrap 3.3.7 -->
-    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <!-- iCheck 1.0.1 -->
-    <script src="{% static 'plugins/iCheck/icheck.min.js' %}"></script>
-    <script src="{% static 'bower_components/moment/moment.js' %}"></script>
-    <!-- DataTables -->
-    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-    <!-- SlimScroll -->
-    <script src="{% static 'bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
-    <!-- FastClick -->
-    <script src="{% static 'bower_components/fastclick/lib/fastclick.js' %}"></script>
-    <!-- AdminLTE App -->
-    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-    <!-- Data Table Initialize -->
-    <script src="{% static 'toastr/toastr.min.js' %}"></script>
-    <script>
-      $(function () {
-        $('#example1').DataTable()
-        var bookTable = $('#booklist').DataTable({
-          'paging'      : true,
-          'lengthChange': false,
-          'searching'   : true,
-          'ordering'    : true,
-          'info'        : false,
-          'autoWidth'   : false
-        })
-    
-        $('#searchBox').on('keyup', function(){
-          bookTable.search(this.value).draw();
-      });
-    
-      })
-      
-    </script>
+<!-- jQuery & Bootstrap 3 Compatibility JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
 
+<!-- Chart.js for Dashboard Analytics Graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- Toastr Notifications -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+  toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "4000"
+  };
+
+  $(function () {
+    // DataTables Initialization
+    $('#example1, .datatable').DataTable({
+      "pageLength": 10,
+      "responsive": true,
+      "language": {
+        "search": "_INPUT_",
+        "searchPlaceholder": "Search records..."
+      }
+    });
+
+    // Active Navigation Highlight
+    var currentUrl = window.location.href;
+    $('.nav-tab').each(function() {
+      if (this.href === currentUrl) {
+        $(this).addClass('bg-indigo-600/20 text-indigo-400 border border-indigo-500/30');
+      }
+    });
+  });
+</script>
+
+{% if messages %}
+  {% for message in messages %}
     <script>
-      $(function(){
-        /** add active class and stay opened when selected */
-        var url = window.location;
-      
-        // for sidebar menu entirely but not cover treeview
-        $('ul.sidebar-menu a').filter(function() {
-            return this.href == url;
-        }).parent().addClass('active');
-      
-        // for treeview
-        $('ul.treeview-menu a').filter(function() {
-            return this.href == url;
-        }).parentsUntil(".sidebar-menu > .treeview-menu").addClass('active');
-      
-      });
-      </script>
-     {% if messages %}
-        {% for message in messages  %}
-    
-        <!-- <script>
-            swal("{{ message.tags|title }}", "{{ message }}", "{{ message.tags }}");
-        </script> -->
-    
-        <script>
-            toastr.{{ message.tags }}('{{ message }}', '{{ message.tags|title }}');
-        </script>
-        {% endfor %}
-        {% endif %}
+      toastr.{{ message.tags }}('{{ message|escapejs }}', '{{ message.tags|title }}');
+    </script>
+  {% endfor %}
+{% endif %}

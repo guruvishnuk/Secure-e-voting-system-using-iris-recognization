@@ -1,169 +1,168 @@
 {% extends 'root.html' %}
 {% load static %}
+
+{% block title %}Admin Control Dashboard — Secure E-Voting System{% endblock %}
+
 {% block content %}
-<!-- Main content -->
-    <section class="content">
-            <!-- Small boxes (Stat box) -->
-      <div class="row">
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h3>{{ position_count }}</h3>
-              <p>No. of Positions</p>
-            </div>
-            <div class="icon">
-              <i class="fa fa-tasks"></i>
-            </div>
-            <a href="{% url 'viewPositions' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
+<div class="space-y-8">
+  
+  <!-- Stat KPI Cards Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    
+    <!-- Positions Card -->
+    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-indigo-500/40 transition-all group">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Positions</p>
+          <h3 class="text-3xl font-extrabold text-white mt-1 group-hover:text-indigo-400 transition-colors">{{ position_count }}</h3>
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3>{{ candidate_count }}</h3>          
-              <p>No. of Candidates</p>
-            </div>
-            <div class="icon">
-              <i class="fa fa-black-tie"></i>
-            </div>
-            <a href="{% url 'viewCandidates' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>{{ voters_count }}</h3>             
-              <p>Total Voters</p>
-            </div>
-            <div class="icon">
-              <i class="fa fa-users"></i>
-            </div>
-            <a href="{% url 'adminViewVoters' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>{{ voted_voters_count }}</h3>
-              <p>Voters Voted</p>
-            </div>
-            <div class="icon">
-              <i class="fa fa-edit"></i>
-            </div>
-            <a href="{% url 'viewVotes' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-          <h3>Votes Tally
-            <span class="pull-right">
-              <a href="{% url 'printResult' %}" class="btn btn-success btn-sm btn-flat"><span class="glyphicon glyphicon-print"></span> Print</a>
-            </span>
-          </h3>
+        <div class="w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-xl ring-1 ring-indigo-500/30">
+          <i class="fa-solid fa-layer-group"></i>
         </div>
       </div>
-
-     {% for position in positions %}
-     {% if not forloop.counter|divisibleby:2 %}
-     <div class='row'>
-     {% endif %}
-     <div class='col-sm-6'>
-      <div class='box box-solid'>
-        <div class='box-header with-border'>
-          <h4 class='box-title'><b>{{ position.name }}</b></h4>
-        </div>
-        <div class='box-body'>
-          <div class='chart'>
-            <canvas id='{{ position.name|slugify }}' style='height:200px'></canvas>
-          </div>
-        </div>
+      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+        <span class="text-slate-500">Configured roles</span>
+        <a href="{% url 'viewPositions' %}" class="text-indigo-400 hover:text-indigo-300 font-semibold inline-flex items-center">
+          Manage <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
       </div>
     </div>
-    {% if forloop.counter|divisibleby:2 %}
-     </div>
-     {% endif %}
 
-     {% endfor %}
-     {% if not forloop.counter|divisibleby:2 %}
-     </div>
-     {% endif %}
-      </section>
-      
-      {% endblock content %}
+    <!-- Candidates Card -->
+    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-purple-500/40 transition-all group">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Candidates</p>
+          <h3 class="text-3xl font-extrabold text-white mt-1 group-hover:text-purple-400 transition-colors">{{ candidate_count }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-xl ring-1 ring-purple-500/30">
+          <i class="fa-solid fa-user-tie"></i>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+        <span class="text-slate-500">Nominated leaders</span>
+        <a href="{% url 'viewCandidates' %}" class="text-purple-400 hover:text-purple-300 font-semibold inline-flex items-center">
+          Manage <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    </div>
 
-      <!-- New Block -->
-      {% block custom_js %}
-      <script src="{% static 'bower_components/chart.js/Chart.js' %}"></script>
-<!-- ChartJS Horizontal Bar -->
-<script src="{% static 'bower_components/chart.js/Chart.HorizontalBar.js' %}"></script>
-      
-{% for key, value in chart_data.items  %}
+    <!-- Total Voters Card -->
+    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-emerald-500/40 transition-all group">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Registered Voters</p>
+          <h3 class="text-3xl font-extrabold text-white mt-1 group-hover:text-emerald-400 transition-colors">{{ voters_count }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xl ring-1 ring-emerald-500/30">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+        <span class="text-slate-500">Iris verified accounts</span>
+        <a href="{% url 'adminViewVoters' %}" class="text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center">
+          View Voters <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Votes Cast Card -->
+    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-rose-500/40 transition-all group">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Votes Cast</p>
+          <h3 class="text-3xl font-extrabold text-white mt-1 group-hover:text-rose-400 transition-colors">{{ voted_voters_count }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center text-xl ring-1 ring-rose-500/30">
+          <i class="fa-solid fa-vote-yea"></i>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+        <span class="text-slate-500">Submitted ballots</span>
+        <a href="{% url 'viewVotes' %}" class="text-rose-400 hover:text-rose-300 font-semibold inline-flex items-center">
+          Live Tally <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Votes Tally Charts Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-800 gap-3">
+    <div>
+      <h2 class="text-lg font-bold text-white tracking-tight flex items-center">
+        <i class="fa-solid fa-chart-column text-indigo-400 mr-2"></i> Real-Time Election Vote Distribution
+      </h2>
+      <p class="text-xs text-slate-400">Vote counts broken down per election position</p>
+    </div>
+    <a href="{% url 'printResult' %}" class="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/20 transition-all">
+      <i class="fa-solid fa-print mr-2"></i> Export Certified PDF Report
+    </a>
+  </div>
+
+  <!-- Chart Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for position in positions %}
+    <div class="glass-card rounded-2xl p-5 border border-slate-800 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <h3 class="font-bold text-white text-base flex items-center">
+          <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 mr-2"></span> {{ position.name }}
+        </h3>
+        <span class="text-xs text-slate-400 bg-slate-900 px-2.5 py-1 rounded-md border border-slate-800">
+          Max Votes: {{ position.max_vote }}
+        </span>
+      </div>
+      <div class="h-64 relative">
+        <canvas id="{{ position.name|slugify }}"></canvas>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock content %}
+
+{% block custom_js %}
+{% for key, value in chart_data.items %}
 <script>
   $(function() {
-    var rowid = '{{ value.pos_id }}';
-    var description = '{{ key|safe|slugify }}';
-    var barChartCanvas = $('#' + description).get(0).getContext('2d')
-    var barChart = new Chart(barChartCanvas)
-    var barChartData = {
-      labels: {{ value.candidates|safe }},
-      datasets: [{
-        label: 'Votes',
-        fillColor: 'rgba(60,141,188,0.9)',  
-        strokeColor: 'rgba(60,141,188,0.8)',
-        pointColor: '#3b8bba',
-        pointStrokeColor: 'rgba(60,141,188,1)',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgba(60,141,188,1)',
-        data: {{ value.votes|safe }}
-      }]
+    const ctx = document.getElementById('{{ key|safe|slugify }}');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: {{ value.candidates|safe }},
+          datasets: [{
+            label: 'Votes Received',
+            data: {{ value.votes|safe }},
+            backgroundColor: 'rgba(99, 102, 241, 0.7)',
+            borderColor: '#6366f1',
+            borderWidth: 1.5,
+            borderRadius: 8,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8', precision: 0 }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: '#f8fafc', font: { weight: 'bold' } }
+            }
+          }
+        }
+      });
     }
-    var barChartOptions = {
-      //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-      scaleBeginAtZero: true,
-      //Boolean - Whether grid lines are shown across the chart
-      scaleShowGridLines: true,
-      //String - Colour of the grid lines
-      scaleGridLineColor: 'rgba(0,0,0,.05)',
-      //Number - Width of the grid lines
-      scaleGridLineWidth: 1,
-      //Boolean - Whether to show horizontal lines (except X axis)
-      scaleShowHorizontalLines: true,
-      //Boolean - Whether to show vertical lines (except Y axis)
-      scaleShowVerticalLines: true,
-      //Boolean - If there is a stroke on each bar
-      barShowStroke: true,
-      //Number - Pixel width of the bar stroke
-      barStrokeWidth: 2,
-      //Number - Spacing between each of the X value sets
-      barValueSpacing: 5,
-      //Number - Spacing between data sets within X values
-      barDatasetSpacing: 1,
-      //String - A legend template
-     {% comment %}
-       
-     legendTemplate: '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>', //! Take note*/
-     
-     {% endcomment %}
-      //Boolean - whether to make the chart responsive
-      responsive: true,
-      maintainAspectRatio: true
-    }
-
-    barChartOptions.datasetFill = false
-    var myChart = barChart.HorizontalBar(barChartData, barChartOptions)
-    //document.getElementById('legend_'+rowid).innerHTML = myChart.generateLegend();
   });
 </script>
 {% endfor %}
-
 {% endblock custom_js %}

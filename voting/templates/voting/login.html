@@ -1,41 +1,116 @@
 {% extends "voting/base.html" %}
-{% block content %}
 
-    <div class="login-box" style="background: linear-gradient(to right, #ff7e5f, #feb47b);">
-        <div class="login-logo">
-            <b>Secure Voting</b>
+{% block title %}Sign In — Secure Biometric Voting System{% endblock %}
+
+{% block content %}
+<div class="flex-grow flex items-center justify-center p-3 sm:p-4 my-auto">
+    <div class="w-full max-w-md space-y-3">
+        
+        <!-- Header Branding -->
+        <div class="text-center space-y-1">
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-sans flex items-center justify-center">
+                <i class="fa-solid fa-eye-low-vision text-indigo-400 mr-2 text-xl"></i>
+                <span>Secure <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">E-Voting</span></span>
+            </h1>
+            <p class="text-[11px] text-slate-400">
+                Biometric Iris Authentication & Smart ID Verification
+            </p>
         </div>
 
-        <div class="login-box-body" style="background: linear-gradient(to right, #ff7e5f, #feb47b);">
-            <p class="login-box-msg">Sign in to start your session</p>
+        <!-- Glassmorphism Login Card -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-2xl shadow-slate-950/50 space-y-4">
+            
+            <!-- Biometric Scanner Visual Banner -->
+            <div class="relative overflow-hidden rounded-xl bg-slate-900/80 border border-slate-800 p-2.5 text-center">
+                <div class="flex items-center justify-center space-x-2 text-indigo-400">
+                    <i class="fa-solid fa-fingerprint animate-pulse text-base"></i>
+                    <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-300">Iris Scanning Portal</span>
+                </div>
+                <!-- Scanning Laser Animation Line -->
+                <div class="mt-1.5 relative h-1 w-full bg-slate-800 rounded overflow-hidden">
+                    <div class="absolute inset-y-0 w-1/3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded animate-[ping_2s_infinite]"></div>
+                </div>
+            </div>
 
-            <form action="{% url 'account_login' %}" method="POST" enctype="multipart/form-data">
+            <form action="{% url 'account_login' %}" method="POST" enctype="multipart/form-data" class="space-y-3.5">
                 {% csrf_token %}
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" name="smartid" placeholder="SmartID" required>
-                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                </div>
-<!--                <div class="form-group has-feedback">-->
-<!--                    <input type="password" class="form-control" name="password" placeholder="Password">-->
-<!--                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>-->
-<!--                </div>-->
-                <div class="form-group has-feedback">
-                    <label for="iris_image">Upload Iris Image:</label>
-                    <input type="file" class="form-control" name="iris_image" id="iris_image" accept="image/*">
-                    <span class="glyphicon glyphicon-eye-open form-control-feedback"></span>
-                </div>
-                <div class="row">
-                    <div class="col-xs-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat" name="login"><i
-                                class="fa fa-sign-in"></i> Sign In</button>
+
+                <!-- Smart ID Input -->
+                <div class="space-y-1">
+                    <label for="smartid" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
+                        Smart ID
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <input type="text" 
+                               name="smartid" 
+                               id="smartid" 
+                               required 
+                               placeholder="e.g. v3022409 or A12345" 
+                               class="w-full pl-9 pr-3 py-2.5 rounded-xl text-xs font-mono tracking-wide text-white glass-input focus:outline-none transition-all placeholder:text-slate-500 placeholder:font-sans">
                     </div>
-                    <div class="pull-right col-xs-4">
-                        <a class="btn btn-primary btn-block btn-flat" href="{% url 'account_register' %}"><i
-                                class="fa fa-upload"></i> Register</a>
+                </div>
+
+                <!-- Iris Image Upload Zone -->
+                <div class="space-y-1">
+                    <label for="iris_image" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
+                        Upload Registered Iris Scan Image
+                    </label>
+                    <div class="relative group">
+                        <label for="iris_image" class="flex flex-col items-center justify-center w-full h-20 border border-dashed border-slate-700 rounded-xl cursor-pointer bg-slate-900/50 hover:bg-slate-800/50 hover:border-indigo-500/50 transition-all text-center px-3">
+                            <div class="flex items-center justify-center space-x-2 text-center">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-xs text-slate-300 font-medium" id="file-label-text">
+                                    Click to browse or drag & drop Iris image
+                                </span>
+                            </div>
+                            <span class="text-[10px] text-slate-500 mt-0.5">PNG, JPG, BMP accepted</span>
+                            <input type="file" 
+                                   name="iris_image" 
+                                   id="iris_image" 
+                                   accept="image/*" 
+                                   required 
+                                   class="hidden" 
+                                   onchange="updateFileName(this)">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit & Register Buttons -->
+                <div class="pt-1 space-y-2">
+                    <button type="submit" name="login" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Authenticate & Sign In</span>
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-[11px] text-slate-400">New voter? </span>
+                        <a href="{% url 'account_register' %}" class="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors">
+                            Create a Voter Account
+                        </a>
                     </div>
                 </div>
             </form>
         </div>
-    </div>
 
+        <!-- Quick Demo Credentials Hint Box -->
+        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400 space-y-0.5 text-center">
+            <p><span class="text-indigo-400 font-semibold">Admin:</span> SmartID <code class="bg-slate-800 px-1 py-0.5 rounded text-slate-200 font-mono">A12345</code> + Image</p>
+            <p><span class="text-emerald-400 font-semibold">Voter:</span> SmartID <code class="bg-slate-800 px-1 py-0.5 rounded text-slate-200 font-mono">v3022409</code> + Iris Image</p>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block custom_js %}
+<script>
+    function updateFileName(input) {
+        const textElement = document.getElementById('file-label-text');
+        if (input.files && input.files[0]) {
+            textElement.innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> ${input.files[0].name}</span>`;
+        }
+    }
+</script>
+{% endblock custom_js %}

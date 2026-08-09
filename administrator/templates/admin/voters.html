@@ -1,171 +1,197 @@
 {% extends 'root.html' %}
+{% load static %}
+
+{% block title %}Voters Management — Secure E-Voting Portal{% endblock %}
+
 {% block content %}
-<section class="content">
-  <div class="row">
-<div class="col-xs-12">
-<div class="box">
-<div class="box-header with-border">
-  <a href="#addnew" data-toggle="modal" class="btn btn-primary btn-sm btn-flat"><i
-          class="fa fa-plus"></i> New</a>
-</div>
-<div class="box-body">
-  <table id="example1" class="table table-bordered">
-      <thead>
-          <th>Lastname</th>
-          <th>Firstname</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Action</th>
-      </thead>
-      <tbody>
-    {% for voter in voters %}
-      
-    <tr>
-      <td>{{ voter.admin.last_name }}</td>
-      <td>{{ voter.admin.first_name }}</td>
-      <td>{{ voter.admin.email }}</td>
-      <td>{{ voter.phone }}</td>
-      
-      <td>
-        <button class='btn btn-success btn-sm edit btn-flat' data-id='{{ voter.id }}'><i class='fa fa-edit'></i> Edit</button>
-        <button class='btn btn-danger btn-sm delete btn-flat' data-id='{{ voter.id }}'><i class='fa fa-trash'></i> Delete</button>
-      </td>
-    </tr>
-    {% endfor %}      
+<div class="space-y-6">
 
-                            </tbody>
-  </table>
-</div>
-</div>
-</div>
-</div>
-</section>
+  <!-- Top Action Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+    <div>
+      <h2 class="text-lg font-bold text-white tracking-tight flex items-center">
+        <i class="fa-solid fa-users-gear text-emerald-400 mr-2"></i> Registered Voters Directory
+      </h2>
+      <p class="text-xs text-slate-400">View, register, and update biometric voter records</p>
+    </div>
+    
+    <button type="button" 
+            data-toggle="modal" 
+            data-target="#addnew" 
+            class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/25 transition-all">
+      <i class="fa-solid fa-user-plus mr-2"></i> Register New Voter
+    </button>
+  </div>
 
+  <!-- Voters Table Container -->
+  <div class="glass-card rounded-2xl p-5 border border-slate-800">
+    <div class="overflow-x-auto">
+      <table id="example1" class="w-full text-left border-collapse text-sm">
+        <thead>
+          <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold">
+            <th class="py-3 px-4">Voter Name</th>
+            <th class="py-3 px-4">Email Address</th>
+            <th class="py-3 px-4">Phone Number</th>
+            <th class="py-3 px-4">Smart ID</th>
+            <th class="py-3 px-4 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/60 text-slate-200">
+          {% for voter in voters %}
+          <tr class="hover:bg-slate-900/50 transition-colors">
+            <td class="py-3.5 px-4 font-medium text-white flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-slate-800 text-indigo-400 flex items-center justify-center text-xs font-bold ring-1 ring-slate-700">
+                {{ voter.admin.first_name|slice:":1" }}{{ voter.admin.last_name|slice:":1" }}
+              </div>
+              <span>{{ voter.admin.first_name }} {{ voter.admin.last_name }}</span>
+            </td>
+            <td class="py-3.5 px-4 text-slate-300">{{ voter.admin.email }}</td>
+            <td class="py-3.5 px-4 text-slate-400 font-mono text-xs">{{ voter.phone }}</td>
+            <td class="py-3.5 px-4">
+              {% if voter.smartid %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  {{ voter.smartid }}
+                </span>
+              {% else %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono bg-slate-800 text-slate-500">
+                  Pending
+                </span>
+              {% endif %}
+            </td>
+            <td class="py-3.5 px-4 text-center space-x-2">
+              <button type="button" class="edit inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors" data-id="{{ voter.id }}">
+                <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
+              </button>
+              <button type="button" class="delete inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/20 transition-colors" data-id="{{ voter.id }}">
+                <i class="fa-solid fa-trash mr-1"></i> Delete
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
 {% endblock content %}
 
 {% block modal %}
-<div class="modal fade" id="addnew">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b>Add New Voter</b></h4>
+<!-- Add New Voter Modal -->
+<div class="modal fade" id="addnew" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl">
+      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
+        <h5 class="modal-title font-bold text-base text-white flex items-center">
+          <i class="fa-solid fa-user-plus text-indigo-400 mr-2"></i> Add New Voter Account
+        </h5>
+        <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'adminViewVoters' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body p-6 space-y-4">
+          {% for field in form1 %}
+          <div class="space-y-1">
+            <label class="block text-xs font-medium text-slate-300">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<p class="text-xs text-rose-400 mt-1">{{ field.errors.0 }}</p>{% endif %}
           </div>
-          <div class="modal-body">
-            <form class="form-horizontal" method="POST"  action="{% url 'adminViewVoters' %}" enctype="multipart/form-data">
-              {% csrf_token %}
+          {% endfor %}
 
-             
-              <div class="modal-body">
-                  {% for field in form1  %}
-                  <div class="form-group has-feedback">
-                      <span class="text-danger">{{field.errors}}</span>
-                      {{field.label_tag}}
-                      {{field}}
-                  </div>
-                  {% endfor %}
-
-                  {% for field in form2  %}
-                  <div class="form-group has-feedback">
-                      <span class="text-danger">{{field.errors}}</span>
-                      {{field.label_tag}}
-                      {{field}}
-                  </div>
-                  {% endfor %}
-
+          {% for field in form2 %}
+          <div class="space-y-1">
+            <label class="block text-xs font-medium text-slate-300">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<p class="text-xs text-rose-400 mt-1">{{ field.errors.0 }}</p>{% endif %}
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            <button type="submit" class="btn btn-primary btn-flat" name="add"><i class="fa fa-save"></i> Save</button>
-          </div></form></div></div></div></div>
+          {% endfor %}
+        </div>
+        <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-end space-x-3">
+          <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Close</button>
+          <button type="submit" name="add" class="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30">Save Voter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
-<!-- Edit -->
-<div class="modal fade" id="edit">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b>Edit Voter</b></h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal" method="POST" action="{% url 'updateVoter' %}">
-              {% csrf_token %}
-              <input type="hidden" class="id" name="id">
-              <div class="form-group">
-                  <label for="edit_firstname" class="col-sm-3 control-label">Firstname</label>
-
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="edit_firstname" name="first_name">
-                  </div>
-              </div>
-              <div class="form-group">
-                  <label for="edit_lastname" class="col-sm-3 control-label">Lastname</label>
-
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="edit_lastname" name="last_name">
-                  </div>
-              </div>
-              <div class="form-group">
-                <label for="edit_email" class="col-sm-3 control-label">Email</label>
-
-                <div class="col-sm-9">
-                  <input type="email" class="form-control" id="edit_email" name="email">
-                </div>
+<!-- Edit Voter Modal -->
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl">
+      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
+        <h5 class="modal-title font-bold text-base text-white flex items-center">
+          <i class="fa-solid fa-pen-to-square text-emerald-400 mr-2"></i> Edit Voter Details
+        </h5>
+        <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'updateVoter' %}">
+        {% csrf_token %}
+        <input type="hidden" class="id" name="id">
+        <div class="modal-body p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label for="edit_firstname" class="block text-xs font-medium text-slate-300">First Name</label>
+              <input type="text" class="w-full px-3.5 py-2 rounded-xl text-sm glass-input focus:outline-none" id="edit_firstname" name="first_name" required>
             </div>
-            <div class="form-group">
-              <label for="edit_phone" class="col-sm-3 control-label">Phone</label>
-
-              <div class="col-sm-9">
-                <input type="text" class="form-control" id="edit_phone" name="phone">
-              </div>
-          </div> 
-
-
+            <div class="space-y-1">
+              <label for="edit_lastname" class="block text-xs font-medium text-slate-300">Last Name</label>
+              <input type="text" class="w-full px-3.5 py-2 rounded-xl text-sm glass-input focus:outline-none" id="edit_lastname" name="last_name" required>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            <button type="submit" class="btn btn-success btn-flat" name="edit"><i class="fa fa-check-square-o"></i> Update</button>
-            </form>
+          <div class="space-y-1">
+            <label for="edit_email" class="block text-xs font-medium text-slate-300">Email Address</label>
+            <input type="email" class="w-full px-3.5 py-2 rounded-xl text-sm glass-input focus:outline-none" id="edit_email" name="email" required>
           </div>
-      </div>
+          <div class="space-y-1">
+            <label for="edit_phone" class="block text-xs font-medium text-slate-300">Phone Number</label>
+            <input type="text" class="w-full px-3.5 py-2 rounded-xl text-sm glass-input focus:outline-none" id="edit_phone" name="phone" required>
+          </div>
+        </div>
+        <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-end space-x-3">
+          <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Close</button>
+          <button type="submit" name="edit" class="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/30">Update Details</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
-<!-- Delete -->
-<div class="modal fade" id="delete">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b>Deleting...</b></h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal" method="POST" action="{% url 'deleteVoter' %}">
-              <input type="hidden" class="id" name="id">
-              {% csrf_token %}
-              <div class="text-center">
-                  <p>DELETE VOTER</p>
-                  <h2 class="bold fullname"></h2>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            <button type="submit" class="btn btn-danger btn-flat" name="delete"><i class="fa fa-trash"></i> Delete</button>
-            </form>
-          </div>
+<!-- Delete Voter Confirmation Modal -->
+<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl text-center">
+      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
+        <h5 class="modal-title font-bold text-base text-rose-400 flex items-center">
+          <i class="fa-solid fa-triangle-exclamation mr-2"></i> Delete Voter Record
+        </h5>
+        <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <form method="POST" action="{% url 'deleteVoter' %}">
+        {% csrf_token %}
+        <input type="hidden" class="id" name="id">
+        <div class="modal-body p-6 space-y-3">
+          <i class="fa-solid fa-user-xmark text-4xl text-rose-400 animate-bounce"></i>
+          <p class="text-xs text-slate-400">Are you sure you want to permanently delete this voter?</p>
+          <h3 class="text-lg font-bold text-white fullname"></h3>
+        </div>
+        <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-center space-x-3">
+          <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Cancel</button>
+          <button type="submit" name="delete" class="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/30">Confirm Delete</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
-
 {% endblock modal %}
 
-
-
 {% block custom_js %}
-  
 <script>
   $(function() {
       $(document).on('click', '.edit', function(e) {
@@ -181,17 +207,13 @@
           var id = $(this).data('id');
           getRow(id);
       });
-
-
   });
 
   function getRow(id) {
       $.ajax({
           type: 'GET',
           url: '{% url "viewVoter" %}',
-          data: {
-              id: id
-          },
+          data: { id: id },
           dataType: 'json',
           success: function(response) {
               $('.id').val(response.id);
@@ -203,6 +225,5 @@
           }
       });
   }
-  </script>
+</script>
 {% endblock custom_js %}
-  

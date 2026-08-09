@@ -1,39 +1,53 @@
 {% load static %}
-<aside class="main-sidebar">
-  <!-- sidebar: style can be found in sidebar.less -->
-  <section class="sidebar">
-    <!-- Sidebar user panel -->
-    <div class="user-panel">
-      <div class="pull-left image">
-        <img src="{% static 'images/people.png' %}" class="img-circle" alt="User Image">
-      </div>
-      <div class="pull-left info">
-        <p>{{ request.user }}</p>
-        <a><i class="fa fa-circle text-success"></i> Online</a>
-      </div>
-    </div>
-    <!-- sidebar menu: : style can be found in sidebar.less -->
-    <ul class="sidebar-menu" data-widget="tree">
+<div class="bg-slate-900/60 border-b border-slate-800 px-4 sm:px-6 py-2.5 overflow-x-auto scrollbar-none">
+  <div class="max-w-7xl mx-auto flex items-center justify-between min-w-max space-x-6 text-xs">
+    
+    <div class="flex items-center space-x-1 sm:space-x-2">
       {% if request.user.user_type == '1' %}
-  
-      
-      <li class="header">REPORTS</li>
-      <li class=""><a href="{% url 'adminDashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-      <li class=""><a href="{% url 'viewVotes' %}"><span class="glyphicon glyphicon-lock"></span> <span>Votes</span></a></li>
-      <li class="header">MANAGE</li>
-      <li class=""><a href="{% url 'adminViewVoters' %}"><i class="fa fa-users"></i> <span>Voters</span></a></li>
-      <li class=""><a href="{% url 'viewPositions' %}"><i class="fa fa-tasks"></i> <span>Positions</span></a></li>
-      <li class=""><a href="{% url 'viewCandidates' %}"><i class="fa fa-black-tie"></i> <span>Candidates</span></a></li>
-      <li class="header">SETTINGS</li>
-      <li class=""><a href="{% url 'ballot_position' %}"><i class="fa fa-file-text"></i> <span>Ballot Position</span></a></li>
-      <li class=""><a href="#config" data-toggle="modal"><i class="fa fa-cog"></i> <span>Election Title</span></a></li>
-            
-      {% endif %}
-        
-      <li class="header">Exit</li>
-      <li class=""><a href="{% url 'account_logout' %}"><i class="fa fa-arrow-left"></i> <span>Logout</span></a></li>
+      <!-- Admin Navigation Tabs -->
+      <a href="{% url 'adminDashboard' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-chart-line text-indigo-400 mr-2"></i>
+        <span>Dashboard</span>
+      </a>
 
-    </ul>
-  </section>
-  <!-- /.sidebar -->
-</aside>
+      <a href="{% url 'viewVotes' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-check-double text-purple-400 mr-2"></i>
+        <span>Votes Tally</span>
+      </a>
+
+      <a href="{% url 'adminViewVoters' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-users text-emerald-400 mr-2"></i>
+        <span>Manage Voters</span>
+      </a>
+
+      <a href="{% url 'viewPositions' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-layer-group text-amber-400 mr-2"></i>
+        <span>Positions</span>
+      </a>
+
+      <a href="{% url 'viewCandidates' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-user-tie text-cyan-400 mr-2"></i>
+        <span>Candidates</span>
+      </a>
+
+      <a href="{% url 'ballot_position' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-sliders text-pink-400 mr-2"></i>
+        <span>Ballot Layout</span>
+      </a>
+      {% else %}
+      <!-- Voter Navigation -->
+      <a href="{% url 'voterDashboard' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+        <i class="fa-solid fa-vote-yea text-indigo-400 mr-2"></i>
+        <span>Voting Portal</span>
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- Active Route Highlight Helper -->
+    <div class="text-[11px] text-slate-500 hidden lg:block">
+      <span class="font-semibold text-slate-400">Status:</span> 
+      {% if request.user.user_type == '1' %}Admin Control Center{% else %}Voter Session Active{% endif %}
+    </div>
+
+  </div>
+</div>

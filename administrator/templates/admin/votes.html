@@ -1,105 +1,92 @@
 {% extends 'root.html' %}
+{% load static %}
+
+{% block title %}Votes Tally & Audit Logs — Secure E-Voting Portal{% endblock %}
+
 {% block content %}
-<section class="content">
-  <div class="row">
-<div class="col-xs-12">
-<div class="box">
-  <div class="box-header with-border">
-    <a href="#reset" data-toggle="modal" class="btn btn-danger btn-sm btn-flat"><i class="fa fa-refresh"></i> Reset</a>
+<div class="space-y-6">
+
+  <!-- Top Action Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+    <div>
+      <h2 class="text-lg font-bold text-white tracking-tight flex items-center">
+        <i class="fa-solid fa-check-double text-purple-400 mr-2"></i> Cast Votes Audit Log
+      </h2>
+      <p class="text-xs text-slate-400">Detailed list of individual voter entries and candidate choices</p>
+    </div>
+    
+    <div class="flex items-center space-x-3">
+      <a href="{% url 'printResult' %}" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/20 transition-all">
+        <i class="fa-solid fa-file-pdf mr-2"></i> Download PDF Results
+      </a>
+      <button type="button" 
+              data-toggle="modal" 
+              data-target="#reset" 
+              class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/25 transition-all">
+        <i class="fa-solid fa-rotate-left mr-2"></i> Reset Election Votes
+      </button>
+    </div>
   </div>
-<div class="box-body">
-  <table id="example1" class="table table-bordered">
-      <thead>
-          <th>Voter's Name</th>
-          <th>Candidate Voted For</th>
-          <th>Position</th>
-      </thead>
-      <tbody>
-    {% for vote in votes %}
-      
-    <tr>
-      <td>{{ vote.voter }}</td>
-      <td>{{ vote.candidate }}</td>
-      <td>{{ vote.position }}</td>
-      
-     
-    </tr>
-    {% endfor %}      
 
-                            </tbody>
-  </table>
-</div>
-</div>
-</div>
-</div>
-</section>
+  <!-- Votes Table Container -->
+  <div class="glass-card rounded-2xl p-5 border border-slate-800">
+    <div class="overflow-x-auto">
+      <table id="example1" class="w-full text-left border-collapse text-sm">
+        <thead>
+          <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold">
+            <th class="py-3 px-4">Voter Name</th>
+            <th class="py-3 px-4">Candidate Chosen</th>
+            <th class="py-3 px-4">Position</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/60 text-slate-200">
+          {% for vote in votes %}
+          <tr class="hover:bg-slate-900/50 transition-colors">
+            <td class="py-3.5 px-4 font-semibold text-white flex items-center space-x-2">
+              <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
+              <span>{{ vote.voter }}</span>
+            </td>
+            <td class="py-3.5 px-4 font-bold text-indigo-300">{{ vote.candidate }}</td>
+            <td class="py-3.5 px-4">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                {{ vote.position }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+</div>
 {% endblock content %}
 
 {% block modal %}
-<!-- Reset -->
-<div class="modal fade" id="reset">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b>Reseting...</b></h4>
-          </div>
-          <div class="modal-body">
-            <div class="text-center">
-                <p>RESET VOTES</p>
-                <h4>This will delete all votes.</h4>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            <a href="{% url 'resetVote' %}" class="btn btn-danger btn-flat"><i class="fa fa-refresh"></i> Reset</a>
-          </div>
+<!-- Reset Votes Modal -->
+<div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl text-center">
+      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
+        <h5 class="modal-title font-bold text-base text-rose-400 flex items-center">
+          <i class="fa-solid fa-triangle-exclamation mr-2"></i> Reset Election Data
+        </h5>
+        <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body p-6 space-y-3">
+        <i class="fa-solid fa-circle-radiation text-4xl text-rose-400 animate-pulse"></i>
+        <h3 class="text-lg font-bold text-white">Reset All Cast Votes?</h3>
+        <p class="text-xs text-slate-400">This action will clear all submitted vote tallies. This cannot be undone!</p>
+      </div>
+      <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-center space-x-3">
+        <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Cancel</button>
+        <a href="{% url 'resetVote' %}" class="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/30">
+          Confirm Reset
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock modal %}
-
-
-
-{% block custom_js %}
-  
-<script>
-  $(function() {
-      $(document).on('click', '.edit', function(e) {
-          e.preventDefault();
-          $('#edit').modal('show');
-          var id = $(this).data('id');
-          getRow(id);
-      });
-
-      $(document).on('click', '.delete', function(e) {
-          e.preventDefault();
-          $('#delete').modal('show');
-          var id = $(this).data('id');
-          getRow(id);
-      });
-
-
-  });
-
-  function getRow(id) {
-      $.ajax({
-          type: 'GET',
-          url: '{% url "viewCandidate" %}',
-          data: {
-              id: id
-          },
-          dataType: 'json',
-          success: function(response) {
-            $('.id').val(id),
-              $('.display_form').html(response.form);
-              $('.fullname').html(response.fullname);
-          },
-         
-      });
-  }
-  </script>
-{% endblock custom_js %}
-  

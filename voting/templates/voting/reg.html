@@ -1,93 +1,125 @@
 {% extends "voting/base.html" %}
+
+{% block title %}Register Voter Account — Secure E-Voting Portal{% endblock %}
+
 {% block content %}
+<div class="flex-grow flex items-center justify-center p-3 sm:p-4 my-auto">
+    <div class="w-full max-w-xl space-y-3">
+        
+        <!-- Header Branding (Compact Inline Layout) -->
+        <div class="text-center space-y-1">
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-sans flex items-center justify-center">
+                <i class="fa-solid fa-user-plus text-indigo-400 mr-2 text-lg"></i>
+                <span>Voter <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Registration</span></span>
+            </h1>
+            <p class="text-[11px] text-slate-400">
+                Enter your account details and upload an Iris scan image to generate your Smart ID
+            </p>
+        </div>
 
-<div class="login-box">
-    <div class="login-logo">
-        <b>Secure Voting System</b>
-    </div>
-
-    <div class="login-box-body">
-        <p class="login-box-msg">Register an account</p>
-        <form action="{% url 'account_register' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="modal-body">
-                {% for field in form1 %}
-                <div class="form-group has-feedback">
-                    <span class="text-danger">{{ field.errors }}</span>
-                    {{ field.label_tag }}
-                    {{ field }}
-                </div>
-                {% endfor %}
-
-                {% for field in form2 %}
-                <div class="form-group has-feedback">
-                    <span class="text-danger">{{ field.errors }}</span>
-                    {{ field.label_tag }}
-                    {{ field }}
-                </div>
-                {% endfor %}
-
-                <div class="row">
-                    <div class="col-xs-6">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat" name="register">
-                            <i class="fa fa-sign-in"></i> Register
-                        </button>
-                    </div>
-                    <div class="pull-right col-xs-6">
-                        <a class="btn btn-primary btn-block btn-flat" href="{% url 'account_login' %}">
-                            <i class="fa fa-upload"></i> Sign In
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="register" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="{% url 'account_register' %}" method="POST" enctype="multipart/form-data">
+        <!-- Glassmorphism Registration Card -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-2xl shadow-slate-950/50 space-y-3">
+            
+            <form action="{% url 'account_register' %}" method="POST" enctype="multipart/form-data" class="space-y-3">
                 {% csrf_token %}
 
-                <div class="modal-header">
-                    <p class="modal-title" id="register">
-                        Create New Account
-                        <span class="float-right">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </span>
-                    </p>
-                </div>
-                <div class="modal-body">
+                <!-- Form Fields 2-Column Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    
                     {% for field in form1 %}
-                    <div class="form-group has-feedback">
-                        {{ field.errors }}
-                        {{ field.label_tag }}
-                        {{ field }}
+                    <div class="space-y-0.5">
+                        <label for="{{ field.id_for_label }}" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
+                            {{ field.label }}
+                        </label>
+                        <input type="{{ field.field.widget.input_type|default:'text' }}"
+                               name="{{ field.name }}"
+                               id="{{ field.id_for_label }}"
+                               value="{{ field.value|default:'' }}"
+                               {% if field.field.required %}required{% endif %}
+                               placeholder="{{ field.label }}"
+                               class="w-full px-3 py-2 rounded-lg text-xs text-white glass-input focus:outline-none transition-all placeholder:text-slate-500">
+                        {% if field.errors %}
+                            <p class="text-[10px] text-rose-400">{{ field.errors.0 }}</p>
+                        {% endif %}
                     </div>
                     {% endfor %}
 
                     {% for field in form2 %}
-                    <div class="form-group has-feedback">
-                        {{ field.errors }}
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </div>
+                        {% if field.name != 'iris_image' %}
+                            <div class="space-y-0.5">
+                                <label for="{{ field.id_for_label }}" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
+                                    {{ field.label }}
+                                </label>
+                                <input type="{{ field.field.widget.input_type|default:'text' }}"
+                                       name="{{ field.name }}"
+                                       id="{{ field.id_for_label }}"
+                                       value="{{ field.value|default:'' }}"
+                                       {% if field.field.required %}required{% endif %}
+                                       placeholder="{{ field.label }}"
+                                       class="w-full px-3 py-2 rounded-lg text-xs text-white glass-input focus:outline-none transition-all placeholder:text-slate-500">
+                                {% if field.errors %}
+                                    <p class="text-[10px] text-rose-400">{{ field.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
+
                 </div>
-                <div class="modal-footer">
-                    <button type="none" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="reg"
-                        onclick="return confirm('Are you sure the details provided are correct?\nYou will NOT be allowed to make modifications.')"
-                        class="btn btn-primary">Save</button>
+
+                <!-- Iris Image Dropzone (Compact Full Width) -->
+                {% for field in form2 %}
+                    {% if field.name == 'iris_image' %}
+                    <div class="space-y-1 pt-1">
+                        <label for="{{ field.id_for_label }}" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
+                            Iris Scan Image File (Biometric Verification)
+                        </label>
+                        <label for="{{ field.id_for_label }}" class="flex items-center justify-center w-full h-14 border border-dashed border-slate-700 rounded-xl cursor-pointer bg-slate-900/60 hover:bg-slate-800/60 hover:border-purple-500/50 transition-all text-center px-4 space-x-3">
+                            <i class="fa-solid fa-eye text-lg text-purple-400"></i>
+                            <span class="text-xs text-slate-300 font-medium truncate" id="reg-iris-label">
+                                Click to select Iris scan image file
+                            </span>
+                            <input type="file"
+                                   name="{{ field.name }}"
+                                   id="{{ field.id_for_label }}"
+                                   accept="image/*"
+                                   {% if field.field.required %}required{% endif %}
+                                   class="hidden"
+                                   onchange="updateRegIris(this)">
+                        </label>
+                        {% if field.errors %}
+                            <p class="text-[10px] text-rose-400">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Submit Action Buttons -->
+                <div class="pt-2 flex items-center justify-between gap-3">
+                    <a href="{% url 'account_login' %}" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 transition-colors text-center">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Sign In
+                    </a>
+
+                    <button type="submit" 
+                            name="reg"
+                            onclick="return confirm('Are you sure the details provided are correct?\nYou will NOT be allowed to make modifications once registered.')"
+                            class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-600/30 transition-all inline-flex items-center space-x-1.5">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Complete Registration</span>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 {% endblock content %}
+
+{% block custom_js %}
+<script>
+    function updateRegIris(input) {
+        const label = document.getElementById('reg-iris-label');
+        if (input.files && input.files[0]) {
+            label.innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> ${input.files[0].name}</span>`;
+        }
+    }
+</script>
+{% endblock custom_js %}

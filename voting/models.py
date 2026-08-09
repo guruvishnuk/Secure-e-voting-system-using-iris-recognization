@@ -33,7 +33,6 @@ class Voter(models.Model):
         Send the smartid to the user via email after the voter is created.
         """
         subject = 'Welcome to the Indian Election Commission Online Voting System'
-        subject = 'Welcome to the Indian Election Commission Online Voting System'
 
         # Crafting the welcome message with the updated format
         message = f"Dear {self.admin.first_name},\n\n" \
@@ -42,8 +41,12 @@ class Voter(models.Model):
                   f"Best regards,\nE-Voting System"
 
         recipient_list = [self.admin.email]
-        # Send email using Django's send_mail function
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+        try:
+            # Send email using Django's send_mail function
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=False)
+            print(f"Successfully sent SmartID ({self.smartid}) to {self.admin.email}")
+        except Exception as e:
+            print(f"Email delivery notice for {self.admin.email} (SmartID: {self.smartid}): {e}")
 
     def __str__(self):
         return f"{self.admin.last_name}, {self.admin.first_name}"

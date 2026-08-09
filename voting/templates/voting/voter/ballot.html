@@ -1,44 +1,60 @@
-{% extends 'root.html' %}
+{% extends 'voting/voter_base.html' %}
+{% load static %}
+
+{% block title %}Official Voting Ballot — Secure E-Voting System{% endblock %}
+
 {% block content %}
-<section class="content">
-  <h1 class="page-header text-center title"><b>{{ TITLE }}</b></h1>
-<div class="row">
-<div class="col-sm-10 col-sm-offset-1">
+<div class="max-w-5xl mx-auto space-y-6">
 
-<div class="alert alert-danger alert-dismissible" id="alert" style="display:none;">
-<button type="button" class="close" data-dismiss="alert"
-aria-hidden="true">&times;</button>
-<span class="message"></span>
-</div>
-
-
-<form method="POST" id="ballotForm" action="{% url 'submit_ballot' %}">
-  {% csrf_token %}
-  {{ ballot|safe }}
-  <div class="text-center">
-    <button type="button" class="btn btn-success btn-flat" id="preview"><i
-            class="fa fa-file-text"></i> Preview</button>
-    <button type="submit" class="btn btn-primary btn-flat" name="submit_vote"><i
-            class="fa fa-check-square-o"></i> Submit</button>
-</div>
-</form>
+  <!-- Header Title & Instructions -->
+  <div class="text-center space-y-2 py-4">
+    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold border border-indigo-500/20 mb-1">
+      <i class="fa-solid fa-check-to-slot"></i>
+      <span>Official Ballot Form</span>
     </div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+      {{ TITLE }}
+    </h1>
+    <p class="text-xs text-slate-400 max-w-lg mx-auto">
+      Select your preferred candidates for each position role below. You can preview your choices before final submission.
+    </p>
   </div>
-</section>
+
+  <!-- Ballot Form Container -->
+  <form method="POST" id="ballotForm" action="{% url 'submit_ballot' %}" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- Render Dynamic Ballot HTML -->
+    {{ ballot|safe }}
+
+    <!-- Action Buttons Bar -->
+    <div class="sticky bottom-4 z-30 glass-card rounded-2xl p-4 border border-slate-800 flex items-center justify-between shadow-2xl">
+      <span class="text-xs text-slate-400 hidden sm:inline-block">
+        <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Ensure all position selections are made
+      </span>
+      
+      <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+        <button type="button" id="preview" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors inline-flex items-center justify-center">
+          <i class="fa-solid fa-eye mr-2"></i> Preview Ballot Choices
+        </button>
+        
+        <button type="submit" name="submit_vote" class="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-600/30 transition-all inline-flex items-center justify-center">
+          <i class="fa-solid fa-paper-plane mr-2"></i> Submit Official Vote
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>
 {% endblock content %}
 
 {% block custom_js %}
 <script>
   $(function() {
-      $('.content').iCheck({
-          checkboxClass: 'icheckbox_flat-green',
-          radioClass: 'iradio_flat-green'
-      });
-
       $(document).on('click', '.reset', function(e) {
           e.preventDefault();
           var desc = $(this).data('desc');
-          $('.' + desc).iCheck('uncheck');
+          $('.' + desc).prop('checked', false);
       });
 
       $(document).on('click', '.platform', function(e) {
@@ -53,9 +69,8 @@ aria-hidden="true">&times;</button>
       $('#preview').click(function(e) {
           e.preventDefault();
           var form = $('#ballotForm').serialize();
-          console.log(form);
           if (form.search("&") < 0 || form == '') {
-              toastr.error('You must vote at least one candidate', "Preview Error");
+              toastr.error('Please choose at least one candidate before previewing', "Selection Required");
           } else {
               $.ajax({
                   type: 'POST',
@@ -64,12 +79,7 @@ aria-hidden="true">&times;</button>
                   dataType: 'json',
                   success: function(response) {
                       if (response.error) {
-                          var errmsg = '';
-                          var messages = response.message;
-                          for (i in messages) {
-                              errmsg += messages[i];
-                          }
-                          toastr.error(errmsg, "Preview Error")
+                          toastr.error(response.list || 'Validation failed', "Preview Error");
                       } else {
                           $('#preview_modal').modal('show');
                           $('#preview_body').html(response.list);
@@ -77,50 +87,51 @@ aria-hidden="true">&times;</button>
                   }
               });
           }
-
       });
-
   });
 </script>
-
 {% endblock custom_js %}
 
 {% block modal %}
-
-<div class="modal fade" id="bio">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b><span class="candidate"></b></h4>
-          </div>
-          <div class="modal-body">
-            <p id="plat_view"></p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-          </div>
+<!-- Platform Manifesto Modal -->
+<div class="modal fade" id="bio" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl">
+      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
+        <h5 class="modal-title font-bold text-base text-white flex items-center">
+          <i class="fa-solid fa-scroll text-indigo-400 mr-2"></i> Manifesto / Bio — <span class="candidate text-indigo-300 ml-1"></span>
+        </h5>
+        <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body p-6 text-sm text-slate-300 leading-relaxed" id="plat_view">
+      </div>
+      <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-end">
+        <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Preview -->
-<div class="modal fade" id="preview_modal">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Vote Preview</h4>
-          </div>
-          <div class="modal-body">
-            <div id="preview_body"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-          </div>
+<!-- Preview Selections Modal -->
+<div class="modal fade" id="preview_modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl">
+      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
+        <h5 class="modal-title font-bold text-base text-white flex items-center">
+          <i class="fa-solid fa-file-shield text-emerald-400 mr-2"></i> Review Your Ballot Selections
+        </h5>
+        <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body p-6 space-y-4" id="preview_body">
+      </div>
+      <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-end space-x-3">
+        <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Edit Selection</button>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock modal %}

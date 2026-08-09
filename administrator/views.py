@@ -6,8 +6,34 @@ from voting.forms import *
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
-import json  # Not used
-from django_renderpdf.views import PDFView
+try:
+    from django_renderpdf.views import PDFView
+except Exception:
+    from django.views.generic import View
+    from django.template.loader import get_template
+    from django.http import HttpResponse
+    from xhtml2pdf import pisa
+
+    class PDFView(View):
+        template_name = None
+        prompt_download = True
+        download_name = "document.pdf"
+
+        def get_context_data(self, **kwargs):
+            return kwargs
+
+        def get(self, request, *args, **kwargs):
+            context = self.get_context_data(**kwargs)
+            template = get_template(self.template_name)
+            html = template.render(context)
+            response = HttpResponse(content_type='application/pdf')
+            if self.prompt_download:
+                response['Content-Disposition'] = f'attachment; filename="{self.download_name}"'
+            pisa_status = pisa.CreatePDF(html, dest=response)
+            if pisa_status.err:
+                return HttpResponse('Error generating PDF', status=500)
+            return response
+
 
 
 def find_n_winners(data, n):

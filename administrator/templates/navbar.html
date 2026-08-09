@@ -1,49 +1,61 @@
 {% load static %}
-<header class="main-header">
-  <!-- Logo -->
-  <a href="{% url 'adminDashboard' %}" class="logo">
-    <!-- mini logo for sidebar mini 50x50 pixels -->
-    <span class="logo-mini"><b>V</b>S</span>
-    <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>Secure Voting System </span>
-  </a>
-  <!-- Header Navbar: style can be found in header.less -->
-  <nav class="navbar navbar-static-top">
-    <!-- Sidebar toggle button-->
-    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-      <span class="sr-only">Toggle navigation</span>
-    </a>
-
-    <div class="navbar-custom-menu">
-      <ul class="nav navbar-nav">
-        <!-- User Account: style can be found in dropdown.less -->
-        <li class="dropdown user user-menu">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="{% static 'images/people.png' %}" class="user-image" alt="User Image">
-            <span class="hidden-xs">{{ request.user }}</span>
-          </a>
-          <ul class="dropdown-menu">
-            <!-- User image -->
-            <li class="user-header">
-              <img src="{% static 'images/people.png' %}" class="img-circle" alt="User Image">
-
-              <p>
-                System Administrator                <small>Member since Mar. 2021</small>
-              </p>
-            </li>
-            <li class="user-footer">
-              <div class="pull-left">
-                <a href="#profile" data-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">Update</a>
-              </div>
-              <div class="pull-right">
-                <a href="{% url 'account_logout' %}" class="btn btn-default btn-flat">Sign out</a>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
+<header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    
+    <!-- Branding & Logo -->
+    <div class="flex items-center space-x-3">
+      <a href="{% url 'adminDashboard' %}" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-shield-halved text-lg"></i>
+        </div>
+        <div>
+          <span class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+            Secure <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">E-Voting</span>
+          </span>
+          <span class="text-[10px] text-indigo-400 font-medium block uppercase tracking-wider">Enterprise Biometric Platform</span>
+        </div>
+      </a>
     </div>
-  </nav>
+
+    <!-- Right Header Actions -->
+    <div class="flex items-center space-x-3 sm:space-x-4">
+      
+      {% if request.user.user_type == '1' %}
+      <!-- Configure Election Title Button -->
+      <button type="button" 
+              data-toggle="modal" 
+              data-target="#config" 
+              class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 transition-colors">
+        <i class="fa-solid fa-gear text-indigo-400 mr-1.5"></i>
+        <span>Configure Title</span>
+      </button>
+      {% endif %}
+
+      <!-- System Status Badge -->
+      <div class="hidden md:flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+        Active Session
+      </div>
+
+      <!-- User Profile Badge & Logout -->
+      <div class="flex items-center space-x-3 pl-3 border-l border-slate-800">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-full bg-indigo-600/30 text-indigo-400 flex items-center justify-center font-bold text-xs ring-1 ring-indigo-500/40">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <span class="hidden sm:block text-xs font-semibold text-slate-200">
+            {{ request.user.first_name|default:request.user.email }}
+          </span>
+        </div>
+
+        <a href="{% url 'account_logout' %}" 
+           title="Sign Out"
+           class="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors">
+          <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
 </header>
- 
 {% include "bio.html" %}
