@@ -187,14 +187,23 @@ def account_register(request):
             # Associate the voter with the user
             voter.admin = user
 
-            # Save the user and voter objects
+            # Save the user and voter objects (voter.save generates Smart ID & sends email)
             user.save()
             voter.save()
 
-            messages.success(request, f"Account registered successfully! Your Smart ID is: {voter.smartid}. (Please copy this Smart ID to Sign In)")
+            email_sent, email_detail = getattr(voter, '_email_status', (False, 'No status'))
+            if email_sent:
+                messages.success(request, f"Account registered successfully! Your Smart ID ({voter.smartid}) has been emailed to {user.email}.")
+            else:
+                messages.warning(request, f"Account registered successfully! Your Smart ID is: {voter.smartid}. (Note: Email delivery to {user.email} failed: {email_detail})")
+
             return redirect(reverse('account_login'))
         else:
-            messages.error(request, "Provided data failed validation")
+            messages.error(request, "Provided data failed validation:")
+            for form in [userForm, voterForm]:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{error}")
 
     return render(request, "voting/reg.html", context)
 

@@ -37,14 +37,14 @@ class CustomUserForm(FormSettings):
         if self.instance.pk is None:  # Insert
             if CustomUser.objects.filter(email=formEmail).exists():
                 raise forms.ValidationError(
-                    "The given email is already registered")
+                    "Email already exists in the system. Please use a different email or sign in.")
         else:  # Update
             dbEmail = self.Meta.model.objects.get(
                 id=self.instance.pk).email.lower()
             if dbEmail != formEmail:  # There has been changes
                 if CustomUser.objects.filter(email=formEmail).exists():
                     raise forms.ValidationError(
-                        "The given email is already registered")
+                        "Email already exists in the system. Please use a different email or sign in.")
         return formEmail
 
     def clean_password(self):

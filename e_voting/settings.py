@@ -151,12 +151,16 @@ ELECTION_TITLE_PATH = os.path.join(
 
 SEND_OTP = False  # If you toggle this to False, Kindly use 0000 as your OTP
 
-# settings.py
-
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# To test emails locally in terminal without SMTP, uncomment the line below:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 5  # Timeout in seconds to prevent hanging on SMTP errors
 EMAIL_HOST_USER = 'guruvishnu1927@gmail.com'
 EMAIL_HOST_PASSWORD = 'yjwwosmkprgezhma'
 DEFAULT_FROM_EMAIL = 'guruvishnu1927@gmail.com'
+

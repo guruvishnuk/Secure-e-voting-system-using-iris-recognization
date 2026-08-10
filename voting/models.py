@@ -19,18 +19,19 @@ class Voter(models.Model):
     smartid = models.CharField(max_length=8, unique=True, blank=True, null=True)  # New field for unique ID
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         if not self.smartid:  # Only generate if smartid is not already set
             self.smartid = f"v{str(uuid.uuid4().int)[:7]}"  # Generate a unique smartid starting with 'v'
 
-        # Send the smartid to the user's email after it's created
-        if not self.pk:  # This checks if the object is being created (not updated)
-            self.send_smartid_email()
-
         super(Voter, self).save(*args, **kwargs)
+
+        if is_new:
+            self._email_status = self.send_smartid_email()
 
     def send_smartid_email(self):
         """
         Send the smartid to the user via email after the voter is created.
+        Returns tuple (success: bool, detail: str)
         """
         subject = 'Welcome to the Indian Election Commission Online Voting System'
 
@@ -38,6 +39,7 @@ class Voter(models.Model):
         message = f"Dear {self.admin.first_name},\n\n" \
                   f"Welcome to the Indian Election Commission Online Voting System!\n\n" \
                   f"Your unique SmartID for voting is: {self.smartid}\n\n" \
+                  f"Please save this SmartID carefully, as it is required to sign in and vote.\n\n" \
                   f"Best regards,\nE-Voting System"
 
         recipient_list = [self.admin.email]
@@ -45,8 +47,11 @@ class Voter(models.Model):
             # Send email using Django's send_mail function
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=False)
             print(f"Successfully sent SmartID ({self.smartid}) to {self.admin.email}")
+            return True, f"Smart ID sent successfully to {self.admin.email}"
         except Exception as e:
-            print(f"Email delivery notice for {self.admin.email} (SmartID: {self.smartid}): {e}")
+            error_msg = str(e)
+            print(f"Email delivery notice for {self.admin.email} (SmartID: {self.smartid}): {error_msg}")
+            return False, error_msg
 
     def __str__(self):
         return f"{self.admin.last_name}, {self.admin.first_name}"
