@@ -1,41 +1,50 @@
 {% extends 'root.html' %}
-{% block content %}
-<section class="content">
-  <div class="row">
-    <div class="col-xs-10 col-xs-offset-1" id="content">
-    </div>
-  </div>
-</section>
 
+{% block title %}Ballot Layout Priority — Enterprise Control Portal{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+    <div>
+      <h2 class="text-xl font-bold text-white tracking-tight flex items-center font-display">
+        <i class="fa-solid fa-sliders text-pink-400 mr-2.5"></i> Ballot Priority Layout & Ordering
+      </h2>
+      <p class="text-xs text-slate-400">Reorder election positions as they appear on the official voter ballot</p>
+    </div>
+    
+    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+      <i class="fa-solid fa-eye mr-1.5"></i> Live Voter Ballot Preview
+    </span>
+  </div>
+
+  <!-- Content Container -->
+  <div class="max-w-4xl mx-auto space-y-4" id="content">
+    <!-- Loaded via AJAX -->
+  </div>
+
+</div>
 {% endblock content %}
 
-
-
 {% block custom_js %}
-  
 <script>
   $(function(){
     fetch();
   
-    $(document).on('click', '.reset', function(e){
-      e.preventDefault();
-      var desc = $(this).data('desc');
-      $('.'+desc).iCheck('uncheck');
-    });
-  
     $(document).on('click', '.moveup', function(e){
       e.preventDefault();
       var id = $(this).data('id');
-      $('#'+id).animate({
-        'marginTop' : "-300px"
-      });
       $.ajax({
         type: 'GET',
         url: '{% url "update_ballot_position" 1 "up" %}'.replace(1, id),
         dataType: 'json',
         success: function(response){
           if(!response.error){
+            toastr.success(response.message || 'Position priority updated', 'Order Changed');
             fetch();
+          } else {
+            toastr.warning(response.message || 'Cannot move further', 'Order Notice');
           }
         }
       });
@@ -44,21 +53,20 @@
     $(document).on('click', '.movedown', function(e){
       e.preventDefault();
       var id = $(this).data('id');
-      $('#'+id).animate({
-        'marginTop' : "+300px"
-      });
       $.ajax({
         type: 'GET',
         url:  '{% url "update_ballot_position" 1 "down" %}'.replace(1, id),
         dataType: 'json',
         success: function(response){
           if(!response.error){
+            toastr.success(response.message || 'Position priority updated', 'Order Changed');
             fetch();
+          } else {
+            toastr.warning(response.message || 'Cannot move further', 'Order Notice');
           }
         }
       });
     });
-  
   });
   
   function fetch(){
@@ -67,10 +75,9 @@
       url: '{% url "fetch_ballot" %}',
       dataType: 'json',
       success: function(response){
-        $('#content').html(response).iCheck({checkboxClass: 'icheckbox_flat-green',radioClass: 'iradio_flat-green'});
+        $('#content').html(response);
       }
     });
   }
-  </script>
+</script>
 {% endblock custom_js %}
-  

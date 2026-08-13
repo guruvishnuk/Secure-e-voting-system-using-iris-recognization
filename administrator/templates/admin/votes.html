@@ -1,7 +1,7 @@
 {% extends 'root.html' %}
 {% load static %}
 
-{% block title %}Votes Tally & Audit Logs — Secure E-Voting Portal{% endblock %}
+{% block title %}Votes Audit Tally — Enterprise Control Portal{% endblock %}
 
 {% block content %}
 <div class="space-y-6">
@@ -9,46 +9,48 @@
   <!-- Top Action Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
     <div>
-      <h2 class="text-lg font-bold text-white tracking-tight flex items-center">
-        <i class="fa-solid fa-check-double text-purple-400 mr-2"></i> Cast Votes Audit Log
+      <h2 class="text-xl font-bold text-white tracking-tight flex items-center font-display">
+        <i class="fa-solid fa-check-double text-purple-400 mr-2.5"></i> Cast Votes Audit Trail & Log
       </h2>
-      <p class="text-xs text-slate-400">Detailed list of individual voter entries and candidate choices</p>
+      <p class="text-xs text-slate-400">Verifiable log of individual voter submissions and choice tallies</p>
     </div>
     
     <div class="flex items-center space-x-3">
-      <a href="{% url 'printResult' %}" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/20 transition-all">
-        <i class="fa-solid fa-file-pdf mr-2"></i> Download PDF Results
+      <a href="{% url 'printResult' %}" class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-xl shadow-emerald-600/20 transition-all font-display">
+        <i class="fa-solid fa-file-pdf mr-2"></i> EXPORT PDF REPORT
       </a>
       <button type="button" 
               data-toggle="modal" 
               data-target="#reset" 
-              class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/25 transition-all">
-        <i class="fa-solid fa-rotate-left mr-2"></i> Reset Election Votes
+              class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-xl shadow-rose-600/30 transition-all font-display">
+        <i class="fa-solid fa-rotate-left mr-2"></i> RESET ELECTION VOTES
       </button>
     </div>
   </div>
 
   <!-- Votes Table Container -->
-  <div class="glass-card rounded-2xl p-5 border border-slate-800">
+  <div class="glass-card-elevated rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-4">
     <div class="overflow-x-auto">
-      <table id="example1" class="w-full text-left border-collapse text-sm">
+      <table id="example1" class="w-full text-left border-collapse text-xs">
         <thead>
-          <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold">
-            <th class="py-3 px-4">Voter Name</th>
-            <th class="py-3 px-4">Candidate Chosen</th>
-            <th class="py-3 px-4">Position</th>
+          <tr class="border-b border-slate-800 text-slate-400 uppercase font-semibold text-[10px] tracking-wider">
+            <th class="py-3 px-4">Voter Identity Record</th>
+            <th class="py-3 px-4">Candidate Voted</th>
+            <th class="py-3 px-4">Election Position Role</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-800/60 text-slate-200">
+        <tbody class="divide-y divide-slate-800/80 text-slate-200">
           {% for vote in votes %}
           <tr class="hover:bg-slate-900/50 transition-colors">
-            <td class="py-3.5 px-4 font-semibold text-white flex items-center space-x-2">
-              <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
-              <span>{{ vote.voter }}</span>
+            <td class="py-3.5 px-4 font-bold text-white flex items-center space-x-2.5">
+              <span class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-[10px]">
+                <i class="fa-solid fa-check"></i>
+              </span>
+              <span class="font-display">{{ vote.voter }}</span>
             </td>
-            <td class="py-3.5 px-4 font-bold text-indigo-300">{{ vote.candidate }}</td>
+            <td class="py-3.5 px-4 font-bold text-indigo-300 text-sm font-display">{{ vote.candidate }}</td>
             <td class="py-3.5 px-4">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+              <span class="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-slate-900 text-slate-300 border border-slate-800">
                 {{ vote.position }}
               </span>
             </td>
@@ -63,13 +65,13 @@
 {% endblock content %}
 
 {% block modal %}
-<!-- Reset Votes Modal -->
+<!-- Reset Votes Confirmation Modal -->
 <div class="modal fade" id="reset" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content glass-card border border-slate-800 text-slate-100 rounded-2xl shadow-2xl text-center">
-      <div class="modal-header border-b border-slate-800 p-4 flex items-center justify-between">
-        <h5 class="modal-title font-bold text-base text-rose-400 flex items-center">
-          <i class="fa-solid fa-triangle-exclamation mr-2"></i> Reset Election Data
+    <div class="modal-content glass-card-elevated border border-slate-800 text-slate-100 rounded-3xl shadow-2xl text-center overflow-hidden">
+      <div class="modal-header border-b border-slate-800 p-5 flex items-center justify-between bg-slate-900/80">
+        <h5 class="modal-title font-bold text-base text-rose-400 flex items-center font-display">
+          <i class="fa-solid fa-triangle-exclamation mr-2.5"></i> Danger Zone: Reset Election Data
         </h5>
         <button type="button" class="close text-slate-400 hover:text-white text-xl" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -77,13 +79,15 @@
       </div>
       <div class="modal-body p-6 space-y-3">
         <i class="fa-solid fa-circle-radiation text-4xl text-rose-400 animate-pulse"></i>
-        <h3 class="text-lg font-bold text-white">Reset All Cast Votes?</h3>
-        <p class="text-xs text-slate-400">This action will clear all submitted vote tallies. This cannot be undone!</p>
+        <h3 class="text-xl font-bold text-white font-display">Purge All Cast Ballots?</h3>
+        <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
+          This operation will permanently wipe all submitted election votes and reset voter statuses. This action cannot be reversed!
+        </p>
       </div>
-      <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-center space-x-3">
-        <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800" data-dismiss="modal">Cancel</button>
-        <a href="{% url 'resetVote' %}" class="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/30">
-          Confirm Reset
+      <div class="modal-footer border-t border-slate-800 p-4 flex items-center justify-center space-x-3 bg-slate-950/60">
+        <button type="button" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-slate-800 border border-slate-700" data-dismiss="modal">Cancel</button>
+        <a href="{% url 'resetVote' %}" class="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-xl shadow-rose-600/30">
+          Confirm Purge & Reset
         </a>
       </div>
     </div>

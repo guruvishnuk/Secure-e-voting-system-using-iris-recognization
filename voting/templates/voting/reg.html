@@ -1,113 +1,154 @@
 {% extends "voting/base.html" %}
 
-{% block title %}Register Voter Account — Secure E-Voting Portal{% endblock %}
+{% block title %}Register Voter Account — Enterprise Biometric Voting System{% endblock %}
 
 {% block content %}
-<div class="flex-grow flex items-center justify-center p-3 sm:p-4 my-auto">
-    <div class="w-full max-w-xl space-y-3">
+<div class="min-h-[calc(100vh-60px)] flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-2xl space-y-4">
         
-        <!-- Header Branding (Compact Inline Layout) -->
-        <div class="text-center space-y-1">
-            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-sans flex items-center justify-center">
-                <i class="fa-solid fa-user-plus text-indigo-400 mr-2 text-lg"></i>
-                <span>Voter <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Registration</span></span>
+        <!-- Header Branding & Section Badge -->
+        <div class="text-center space-y-2">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-semibold">
+                <i class="fa-solid fa-id-card text-xs"></i>
+                <span>National Voter Registration Protocol</span>
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-white font-display">
+                New Voter <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Biometric Onboarding</span>
             </h1>
-            <p class="text-[11px] text-slate-400">
-                Enter your account details and upload an Iris scan image to generate your Smart ID
+            <p class="text-xs text-slate-400 max-w-md mx-auto">
+                Fill in your official identification credentials and upload a clear Iris scan image to generate your backend Smart ID.
             </p>
         </div>
 
-        <!-- Glassmorphism Registration Card -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-2xl shadow-slate-950/50 space-y-3">
+        <!-- Glassmorphic Form Card -->
+        <div class="glass-card-elevated rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
             
-            <form action="{% url 'account_register' %}" method="POST" enctype="multipart/form-data" class="space-y-3">
+            <form action="{% url 'account_register' %}" method="POST" enctype="multipart/form-data" class="space-y-6" id="reg-form">
                 {% csrf_token %}
 
-                <!-- Form Fields 2-Column Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    
-                    {% for field in form1 %}
-                    <div class="space-y-0.5">
-                        <label for="{{ field.id_for_label }}" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
-                            {{ field.label }}
-                        </label>
-                        <input type="{{ field.field.widget.input_type|default:'text' }}"
-                               name="{{ field.name }}"
-                               id="{{ field.id_for_label }}"
-                               value="{{ field.value|default:'' }}"
-                               {% if field.field.required %}required{% endif %}
-                               placeholder="{{ field.label }}"
-                               class="w-full px-3 py-2 rounded-lg text-xs text-white glass-input focus:outline-none transition-all placeholder:text-slate-500">
-                        {% if field.errors %}
-                            <p class="text-[10px] text-rose-400">{{ field.errors.0 }}</p>
-                        {% endif %}
+                <!-- Section 1: Personal Credentials -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-2">
+                        <div class="w-6 h-6 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-xs font-bold">1</div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Personal Identity</h3>
                     </div>
-                    {% endfor %}
 
-                    {% for field in form2 %}
-                        {% if field.name != 'iris_image' %}
-                            <div class="space-y-0.5">
-                                <label for="{{ field.id_for_label }}" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
-                                    {{ field.label }}
-                                </label>
-                                <input type="{{ field.field.widget.input_type|default:'text' }}"
-                                       name="{{ field.name }}"
-                                       id="{{ field.id_for_label }}"
-                                       value="{{ field.value|default:'' }}"
-                                       {% if field.field.required %}required{% endif %}
-                                       placeholder="{{ field.label }}"
-                                       class="w-full px-3 py-2 rounded-lg text-xs text-white glass-input focus:outline-none transition-all placeholder:text-slate-500">
-                                {% if field.errors %}
-                                    <p class="text-[10px] text-rose-400">{{ field.errors.0 }}</p>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-
-                </div>
-
-                <!-- Iris Image Dropzone (Compact Full Width) -->
-                {% for field in form2 %}
-                    {% if field.name == 'iris_image' %}
-                    <div class="space-y-1 pt-1">
-                        <label for="{{ field.id_for_label }}" class="block text-[11px] font-medium text-slate-300 uppercase tracking-wider">
-                            Iris Scan Image File (Biometric Verification)
-                        </label>
-                        <label for="{{ field.id_for_label }}" class="flex items-center justify-center w-full h-14 border border-dashed border-slate-700 rounded-xl cursor-pointer bg-slate-900/60 hover:bg-slate-800/60 hover:border-purple-500/50 transition-all text-center px-4 space-x-3">
-                            <i class="fa-solid fa-eye text-lg text-purple-400"></i>
-                            <span class="text-xs text-slate-300 font-medium truncate" id="reg-iris-label">
-                                Click to select Iris scan image file
-                            </span>
-                            <input type="file"
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {% for field in form1 %}
+                        <div class="space-y-1.5 text-left">
+                            <label for="{{ field.id_for_label }}" class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+                                {{ field.label }}
+                            </label>
+                            <input type="{{ field.field.widget.input_type|default:'text' }}"
                                    name="{{ field.name }}"
                                    id="{{ field.id_for_label }}"
-                                   accept="image/*"
+                                   value="{{ field.value|default:'' }}"
                                    {% if field.field.required %}required{% endif %}
-                                   class="hidden"
-                                   onchange="updateRegIris(this)">
-                        </label>
-                        {% if field.errors %}
-                            <p class="text-[10px] text-rose-400">{{ field.errors.0 }}</p>
-                        {% endif %}
+                                   placeholder="Enter {{ field.label }}"
+                                   class="w-full px-4 py-2.5 rounded-xl text-xs text-white glass-input placeholder:text-slate-500">
+                            {% if field.errors %}
+                                <p class="text-[11px] font-semibold text-rose-400 mt-1 flex items-center">
+                                    <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ field.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Section 2: Contact & Aadhaar Identification -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-slate-800 pb-2">
+                        <div class="w-6 h-6 rounded-lg bg-purple-600/20 text-purple-400 flex items-center justify-center text-xs font-bold">2</div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Official Identification Numbers</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {% for field in form2 %}
+                            {% if field.name != 'iris_image' %}
+                                <div class="space-y-1.5 text-left">
+                                    <label for="{{ field.id_for_label }}" class="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+                                        {{ field.label }}
+                                    </label>
+                                    <input type="{{ field.field.widget.input_type|default:'text' }}"
+                                           name="{{ field.name }}"
+                                           id="{{ field.id_for_label }}"
+                                           value="{{ field.value|default:'' }}"
+                                           {% if field.field.required %}required{% endif %}
+                                           placeholder="Enter {{ field.label }}"
+                                           class="w-full px-4 py-2.5 rounded-xl text-xs text-white glass-input placeholder:text-slate-500">
+                                    {% if field.errors %}
+                                        <p class="text-[11px] font-semibold text-rose-400 mt-1 flex items-center">
+                                            <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ field.errors.0 }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Section 3: Biometric Iris Scan Upload Zone -->
+                {% for field in form2 %}
+                    {% if field.name == 'iris_image' %}
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-2 border-b border-slate-800 pb-2">
+                            <div class="w-6 h-6 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xs font-bold">3</div>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Biometric Iris Scan Sample</h3>
+                        </div>
+
+                        <div class="relative group">
+                            <label for="{{ field.id_for_label }}" class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-2xl cursor-pointer bg-slate-950/60 hover:bg-slate-900/60 transition-all text-center px-4">
+                                <div id="reg-drop-default" class="flex flex-col items-center justify-center space-y-1">
+                                    <i class="fa-solid fa-eye text-2xl text-purple-400 group-hover:scale-110 transition-transform"></i>
+                                    <span class="text-xs text-slate-300 font-medium" id="reg-iris-label">
+                                        Click to upload or drag & drop high-resolution Iris scan image
+                                    </span>
+                                    <span class="text-[10px] text-slate-500">Supported: PNG, JPG, JPEG, BMP</span>
+                                </div>
+
+                                <div id="reg-drop-preview" class="hidden flex items-center space-x-3 text-left">
+                                    <img id="reg-iris-thumb" class="w-14 h-14 rounded-xl object-cover ring-2 ring-emerald-500/60 shadow-lg" src="" alt="Iris Preview">
+                                    <div>
+                                        <div id="reg-iris-filename" class="text-xs font-bold text-emerald-400 truncate max-w-[220px]">file.png</div>
+                                        <div class="text-[10px] text-slate-400">Biometric Pattern Captured</div>
+                                    </div>
+                                </div>
+
+                                <input type="file"
+                                       name="{{ field.name }}"
+                                       id="{{ field.id_for_label }}"
+                                       accept="image/*"
+                                       {% if field.field.required %}required{% endif %}
+                                       class="hidden"
+                                       onchange="previewRegIris(this)">
+                            </label>
+                            {% if field.errors %}
+                                <p class="text-[11px] font-semibold text-rose-400 mt-1 flex items-center">
+                                    <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ field.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
                     </div>
                     {% endif %}
                 {% endfor %}
 
-                <!-- Submit Action Buttons -->
-                <div class="pt-2 flex items-center justify-between gap-3">
-                    <a href="{% url 'account_login' %}" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 transition-colors text-center">
-                        <i class="fa-solid fa-arrow-left mr-1"></i> Sign In
+                <!-- Action Footer Buttons -->
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800/80">
+                    <a href="{% url 'account_login' %}" class="w-full sm:w-auto px-5 py-3 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all text-center">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Return to Sign In
                     </a>
 
                     <button type="submit" 
                             name="reg"
-                            onclick="return confirm('Are you sure the details provided are correct?\nYou will NOT be allowed to make modifications once registered.')"
-                            class="px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-600/30 transition-all inline-flex items-center space-x-1.5">
+                            onclick="return confirm('Please confirm all details are accurate.\nOnce submitted, your Smart ID will be generated and dispatched to your email.')"
+                            class="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 shadow-xl shadow-indigo-600/30 transition-all inline-flex items-center justify-center space-x-2 font-display">
                         <i class="fa-solid fa-shield-halved"></i>
-                        <span>Complete Registration</span>
+                        <span>COMPLETE REGISTRATION</span>
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -115,10 +156,21 @@
 
 {% block custom_js %}
 <script>
-    function updateRegIris(input) {
-        const label = document.getElementById('reg-iris-label');
+    function previewRegIris(input) {
+        const defaultView = document.getElementById('reg-drop-default');
+        const previewView = document.getElementById('reg-drop-preview');
+        const thumb = document.getElementById('reg-iris-thumb');
+        const filenameLabel = document.getElementById('reg-iris-filename');
+
         if (input.files && input.files[0]) {
-            label.innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> ${input.files[0].name}</span>`;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                thumb.src = e.target.result;
+                filenameLabel.textContent = input.files[0].name;
+                defaultView.classList.add('hidden');
+                previewView.classList.remove('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
         }
     }
 </script>

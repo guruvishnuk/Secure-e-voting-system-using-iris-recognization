@@ -1,10 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="en" class="h-full bg-[#070a12] text-slate-100 selection:bg-indigo-500 selection:text-white">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Voter Portal — Secure E-Voting System{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <title>{% block title %}Voter Portal — Secure Biometric E-Voting{% endblock %}</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,18 +13,9 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'Plus Jakarta Sans', 'sans-serif'],
-            },
-            colors: {
-              brand: {
-                50: '#eef2ff',
-                500: '#6366f1',
-                600: '#4f46e5',
-                700: '#4338ca',
-                800: '#3730a3',
-                900: '#312e81',
-                950: '#1e1b4b',
-              }
+              sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+              display: ['Outfit', 'Plus Jakarta Sans', 'sans-serif'],
+              mono: ['Fira Code', 'JetBrains Mono', 'monospace'],
             }
           }
         }
@@ -34,82 +25,117 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Toastr for Notifications -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #070a12;
+        color: #f1f5f9;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
       .glass-card {
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(16px);
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.08);
       }
+      .glass-card-elevated {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
       .glass-input {
-        background: rgba(30, 41, 59, 0.7);
+        background: rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.12);
         color: #f8fafc;
       }
       .glass-input:focus {
+        background: rgba(15, 23, 42, 0.9);
         border-color: #6366f1;
         outline: none;
-        box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #070a12;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 9999px;
       }
     </style>
 </head>
-<body class="h-full font-sans antialiased bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="h-full antialiased flex flex-col justify-between">
   
   <div class="relative min-h-screen flex flex-col justify-between">
     
-    <!-- Top Voter Header Bar -->
-    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3.5">
+    <!-- Top Voter Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-[#070a12]/90 backdrop-blur-xl border-b border-slate-800/80 px-4 sm:px-8 py-3">
       <div class="max-w-7xl mx-auto flex items-center justify-between">
         
         <!-- Portal Title & Branding -->
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
-            <i class="fa-solid fa-vote-yea text-lg"></i>
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 ring-1 ring-indigo-400/30">
+            <i class="fa-solid fa-eye text-lg"></i>
           </div>
           <div>
-            <span class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-              Voter <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Portal</span>
-            </span>
-            <span class="text-[10px] text-slate-400 font-medium block">Indian Election Commission</span>
+            <div class="flex items-center space-x-2">
+              <span class="font-display text-base font-extrabold text-white tracking-tight">
+                VOTER <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">PORTAL</span>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                Official
+              </span>
+            </div>
+            <span class="text-[10px] text-slate-400 font-medium block">Biometric Iris Authenticated System</span>
           </div>
         </div>
 
-        <!-- Voter Info & Status -->
+        <!-- Voter Metadata & Profile Actions -->
         <div class="flex items-center space-x-3 sm:space-x-4">
           
-          <!-- Smart ID Pill -->
-          <div class="hidden sm:flex items-center px-3 py-1 rounded-full text-xs font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            <i class="fa-solid fa-id-card mr-1.5 text-xs"></i>
-            <span>{{ request.user.voter.smartid }}</span>
+          <!-- Smart ID Badge -->
+          <div class="hidden sm:flex items-center px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-900 text-indigo-300 border border-slate-800 space-x-2 shadow-inner">
+            <i class="fa-solid fa-id-badge text-indigo-400 text-xs"></i>
+            <span class="font-semibold">{{ request.user.voter.smartid }}</span>
           </div>
 
-          <!-- Verified Status -->
-          <div class="hidden md:flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-            Biometrics Verified
+          <!-- Verified Biometric Badge -->
+          <div class="hidden md:flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+            Iris Verified
           </div>
 
-          <!-- Profile & Logout -->
-          <div class="flex items-center space-x-3 pl-2 sm:pl-3 border-l border-slate-800">
-            <div class="flex items-center space-x-2">
-              <div class="w-8 h-8 rounded-full bg-indigo-600/30 text-indigo-400 flex items-center justify-center font-bold text-xs ring-1 ring-indigo-500/40">
+          <!-- Profile Chip & Logout -->
+          <div class="flex items-center space-x-3 pl-2 sm:pl-4 border-l border-slate-800">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-xs shadow-md ring-1 ring-indigo-400/40 font-display">
                 {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
               </div>
-              <span class="hidden sm:block text-xs font-semibold text-slate-200">
-                {{ request.user.first_name }} {{ request.user.last_name }}
-              </span>
+              <div class="hidden lg:block text-left">
+                <span class="block text-xs font-bold text-slate-100">
+                  {{ request.user.first_name }} {{ request.user.last_name }}
+                </span>
+                <span class="block text-[10px] text-slate-400 font-medium">Verified Citizen Voter</span>
+              </div>
             </div>
 
             <a href="{% url 'account_logout' %}" 
                title="Sign Out"
-               class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-rose-400 bg-slate-800/80 hover:bg-rose-500/10 border border-slate-700 transition-colors inline-flex items-center">
-              <i class="fa-solid fa-arrow-right-from-bracket mr-1.5"></i>
-              <span>Sign Out</span>
+               class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-rose-400 bg-slate-900/90 hover:bg-rose-500/10 border border-slate-800 hover:border-rose-500/30 transition-all inline-flex items-center space-x-1.5 shadow-sm">
+              <i class="fa-solid fa-power-off text-xs"></i>
+              <span class="hidden sm:inline">Sign Out</span>
             </a>
           </div>
 
@@ -117,23 +143,26 @@
       </div>
     </header>
 
-    <!-- Main Voter Content -->
-    <main class="relative z-10 flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
+    <!-- Main Voter Content Workspace -->
+    <main class="relative z-10 flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {% block content %}{% endblock content %}
     </main>
 
     <!-- Footer -->
-    <footer class="relative z-10 py-4 px-4 border-t border-slate-800/60 text-center text-xs text-slate-500 bg-slate-950/80">
+    <footer class="relative z-10 py-3.5 px-4 sm:px-8 border-t border-slate-800/60 bg-[#070a12]/90 text-xs text-slate-500">
       <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p>&copy; 2026 Indian Election Commission — Official Biometric E-Voting System.</p>
-        <span class="text-slate-400">Iris Verification Secured</span>
+        <p>&copy; 2026 Indian Election Commission — Biometric E-Voting Portal.</p>
+        <div class="flex items-center space-x-3 text-[11px]">
+          <span class="inline-flex items-center text-slate-400">
+            <i class="fa-solid fa-lock text-emerald-400 mr-1.5"></i> End-to-End Cryptographic Ledger
+          </span>
+        </div>
       </div>
     </footer>
   </div>
 
   <!-- jQuery & Toastr JS -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   
   <script>
@@ -141,9 +170,9 @@
       "closeButton": true,
       "progressBar": true,
       "positionClass": "toast-top-right",
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "4000",
+      "showDuration": "200",
+      "hideDuration": "800",
+      "timeOut": "4500",
     };
   </script>
 

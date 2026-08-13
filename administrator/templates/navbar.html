@@ -1,18 +1,23 @@
 {% load static %}
-<header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3">
+<header class="sticky top-0 z-40 bg-[#070a12]/90 backdrop-blur-xl border-b border-slate-800/80 px-4 sm:px-8 py-3">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     
     <!-- Branding & Logo -->
     <div class="flex items-center space-x-3">
       <a href="{% url 'adminDashboard' %}" class="flex items-center space-x-3 group">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 ring-1 ring-indigo-400/30 group-hover:scale-105 transition-transform">
           <i class="fa-solid fa-shield-halved text-lg"></i>
         </div>
         <div>
-          <span class="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-            Secure <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">E-Voting</span>
-          </span>
-          <span class="text-[10px] text-indigo-400 font-medium block uppercase tracking-wider">Enterprise Biometric Platform</span>
+          <div class="flex items-center space-x-2">
+            <span class="font-display text-base font-extrabold text-white tracking-tight">
+              ELECTION <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">OPS CENTER</span>
+            </span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              Admin Portal
+            </span>
+          </div>
+          <span class="text-[10px] text-slate-400 font-medium block">Enterprise Election Control Infrastructure</span>
         </div>
       </a>
     </div>
@@ -25,33 +30,36 @@
       <button type="button" 
               data-toggle="modal" 
               data-target="#config" 
-              class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 transition-colors">
-        <i class="fa-solid fa-gear text-indigo-400 mr-1.5"></i>
+              class="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-200 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 transition-all shadow-sm">
+        <i class="fa-solid fa-pen-to-square text-indigo-400 mr-2"></i>
         <span>Configure Title</span>
       </button>
       {% endif %}
 
       <!-- System Status Badge -->
-      <div class="hidden md:flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-        Active Session
+      <div class="hidden md:flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+        System Live
       </div>
 
       <!-- User Profile Badge & Logout -->
       <div class="flex items-center space-x-3 pl-3 border-l border-slate-800">
-        <div class="flex items-center space-x-2">
-          <div class="w-8 h-8 rounded-full bg-indigo-600/30 text-indigo-400 flex items-center justify-center font-bold text-xs ring-1 ring-indigo-500/40">
-            <i class="fa-solid fa-user"></i>
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600/30 text-indigo-400 flex items-center justify-center font-bold text-xs ring-1 ring-indigo-500/40 font-display">
+            <i class="fa-solid fa-user-gear"></i>
           </div>
-          <span class="hidden sm:block text-xs font-semibold text-slate-200">
-            {{ request.user.first_name|default:request.user.email }}
-          </span>
+          <div class="hidden lg:block text-left">
+            <span class="block text-xs font-bold text-slate-200">
+              {{ request.user.first_name|default:request.user.email }}
+            </span>
+            <span class="block text-[10px] text-slate-400 font-medium">Administrator</span>
+          </div>
         </div>
 
         <a href="{% url 'account_logout' %}" 
            title="Sign Out"
-           class="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors">
-          <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+           class="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors">
+          <i class="fa-solid fa-power-off text-sm"></i>
         </a>
       </div>
 

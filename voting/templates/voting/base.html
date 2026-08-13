@@ -1,11 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100 overflow-x-hidden">
+<html lang="en" class="h-full bg-[#070a12] text-slate-100 overflow-x-hidden selection:bg-indigo-500 selection:text-white">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Secure E-Voting Portal{% endblock %}</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <title>{% block title %}Enterprise Biometric Voting System{% endblock %}</title>
+    <meta name="description" content="Secure, Iris-Recognized National E-Voting Portal powered by Advanced Biometric Cryptography.">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -13,18 +14,47 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'Plus Jakarta Sans', 'sans-serif'],
+              sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+              display: ['Outfit', 'Plus Jakarta Sans', 'sans-serif'],
+              mono: ['Fira Code', 'JetBrains Mono', 'monospace'],
             },
             colors: {
+              enterprise: {
+                950: '#070a12',
+                900: '#0b1120',
+                850: '#0f172a',
+                800: '#1e293b',
+                700: '#334155',
+                600: '#475569',
+              },
               brand: {
                 50: '#eef2ff',
                 100: '#e0e7ff',
+                400: '#818cf8',
                 500: '#6366f1',
                 600: '#4f46e5',
                 700: '#4338ca',
                 800: '#3730a3',
                 900: '#312e81',
-                950: '#1e1b4b',
+              }
+            },
+            animation: {
+              'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'scan-laser': 'scanLaser 2.5s ease-in-out infinite alternate',
+              'float-slow': 'floatSlow 6s ease-in-out infinite',
+            },
+            keyframes: {
+              pulseGlow: {
+                '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
+                '50%': { opacity: 0.8, transform: 'scale(1.05)' },
+              },
+              scanLaser: {
+                '0%': { top: '0%' },
+                '100%': { top: '100%' },
+              },
+              floatSlow: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-10px)' },
               }
             }
           }
@@ -32,66 +62,125 @@
       }
     </script>
     
-    <!-- Fonts & Icons -->
+    <!-- Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Toastr for Notifications -->
+    <!-- Toastr Notifications -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <style>
+      /* Enterprise System Typography & Base Adjustments */
       html, body {
         height: 100%;
         margin: 0;
         padding: 0;
+        background-color: #070a12;
+        color: #f1f5f9;
+        font-family: 'Plus Jakarta Sans', sans-serif;
       }
+      
+      /* Glassmorphism Design System */
       .glass-card {
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(16px);
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.08);
       }
-      .glass-input {
-        background: rgba(30, 41, 59, 0.7);
+      .glass-card-elevated {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .glass-input {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .glass-input:focus {
+        background: rgba(15, 23, 42, 0.9);
         border-color: #6366f1;
-        box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
       }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #070a12;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+
+      /* Toastr Custom Styling Override */
+      #toast-container > div {
+        border-radius: 12px !important;
+        opacity: 0.98 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: blur(12px) !important;
+        font-size: 13px !important;
+        padding: 14px 14px 14px 48px !important;
+      }
+      .toast-success { background-color: #065f46 !important; border: 1px solid #10b981 !important; color: #ecfdf5 !important; }
+      .toast-error { background-color: #881337 !important; border: 1px solid #f43f5e !important; color: #fff1f2 !important; }
+      .toast-warning { background-color: #78350f !important; border: 1px solid #f59e0b !important; color: #fffbeb !important; }
+      .toast-info { background-color: #1e3a8a !important; border: 1px solid #3b82f6 !important; color: #eff6ff !important; }
     </style>
 </head>
-<body class="h-full font-sans antialiased bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="h-full antialiased flex flex-col justify-between">
   
-  <div class="relative h-full flex flex-col justify-between overflow-x-hidden">
-    <!-- Dynamic Ambient Glow Background -->
+  <div class="relative min-h-screen flex flex-col justify-between overflow-x-hidden">
+    
+    <!-- Ambient Dynamic Lighting Layer -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
-      <div class="absolute top-1/3 -right-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>
+      <div class="absolute -top-40 -left-40 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse-glow"></div>
+      <div class="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] animate-pulse-glow" style="animation-delay: 2s;"></div>
+      <div class="absolute -bottom-40 left-1/3 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] animate-pulse-glow" style="animation-delay: 1s;"></div>
     </div>
 
-    <!-- Main Content Container -->
+    <!-- Main View Body -->
     <main class="relative z-10 flex-grow flex flex-col justify-center min-h-0">
       {% block content %}{% endblock content %}
     </main>
 
-    <!-- Footer -->
-    <footer class="relative z-10 py-2.5 px-4 border-t border-slate-800/60 text-center text-[11px] text-slate-500 bg-slate-950/80">
-      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
-        <p>&copy; 2026 Indian Election Commission — Biometric E-Voting Portal.</p>
-        <div class="flex items-center space-x-3">
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
-            Live System
+    <!-- Global Enterprise Footer -->
+    <footer class="relative z-10 py-3.5 px-4 sm:px-8 border-t border-slate-800/60 bg-[#070a12]/90 backdrop-blur-md text-slate-400 text-xs">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <span class="font-display font-bold text-white tracking-wide">SECURE VOTE</span>
+          <span class="text-slate-600">•</span>
+          <span class="text-slate-400 text-[11px]">Biometric Iris Authenticated Infrastructure</span>
+        </div>
+
+        <p class="text-[11px] text-slate-500">
+          &copy; 2026 Election Commission Security Operations. All Rights Reserved.
+        </p>
+
+        <div class="flex items-center space-x-3 text-[11px]">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+            AES-256 Encrypted
           </span>
         </div>
       </div>
     </footer>
   </div>
 
-  <!-- jQuery & Toastr JS -->
+  <!-- JavaScript Libraries -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   
@@ -100,9 +189,9 @@
       "closeButton": true,
       "progressBar": true,
       "positionClass": "toast-top-right",
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "4000",
+      "showDuration": "200",
+      "hideDuration": "800",
+      "timeOut": "4500",
     };
   </script>
 

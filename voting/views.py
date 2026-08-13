@@ -30,53 +30,53 @@ def generate_ballot(display_controls=False):
         for candidate in candidates:
             if position.max_vote > 1:
                 instruction = f"You may select up to {position.max_vote} candidates"
-                input_box = f'<input type="checkbox" value="{candidate.id}" class="w-5 h-5 accent-indigo-600 rounded cursor-pointer {position_name}" name="{position_name}[]">'
+                input_box = f'<input type="checkbox" value="{candidate.id}" class="w-5 h-5 accent-indigo-600 rounded-lg cursor-pointer {position_name}" name="{position_name}[]">'
             else:
                 instruction = "Select only one candidate"
                 input_box = f'<input type="radio" value="{candidate.id}" class="w-5 h-5 accent-indigo-600 cursor-pointer {position_name}" name="{position_name}">'
             image = f"/media/{candidate.photo}"
             candidates_data += f'''
-            <div class="glass-card rounded-xl p-4 border border-slate-800/80 hover:border-indigo-500/40 transition-all flex items-center justify-between gap-4 group">
-                <div class="flex items-center space-x-3">
-                    <img src="{image}" class="w-14 h-14 rounded-xl object-cover ring-1 ring-slate-700 group-hover:ring-indigo-500/50 transition-all">
+            <div class="glass-card rounded-2xl p-4 border border-slate-800 hover:border-indigo-500/50 transition-all flex items-center justify-between gap-4 group hover:shadow-lg hover:shadow-indigo-600/10">
+                <div class="flex items-center space-x-3.5">
+                    <img src="{image}" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-slate-800 group-hover:ring-indigo-500/60 transition-all shadow-md">
                     <div>
-                        <h4 class="font-bold text-slate-100 text-sm">{candidate.fullname}</h4>
-                        <button type="button" class="mt-1 inline-flex items-center text-xs text-indigo-400 hover:text-indigo-300 font-medium platform" data-fullname="{candidate.fullname}" data-bio="{candidate.bio}">
-                            <i class="fa-solid fa-circle-info mr-1"></i> View Platform
+                        <h4 class="font-bold text-white text-sm font-display">{candidate.fullname}</h4>
+                        <button type="button" class="mt-1 inline-flex items-center text-xs text-indigo-400 hover:text-indigo-300 font-semibold platform" data-fullname="{candidate.fullname}" data-bio="{candidate.bio}">
+                            <i class="fa-solid fa-circle-info mr-1 text-xs"></i> View Manifesto
                         </button>
                     </div>
                 </div>
-                <div class="flex items-center pl-2">
+                <div class="flex items-center pr-1">
                     {input_box}
                 </div>
             </div>
             '''
 
-        up = 'disabled opacity-50' if position.priority == 1 else ''
-        down = 'disabled opacity-50' if position.priority == positions.count() else ''
+        up = 'disabled opacity-40 cursor-not-allowed' if position.priority == 1 else ''
+        down = 'disabled opacity-40 cursor-not-allowed' if position.priority == positions.count() else ''
 
         controls_html = ""
         if display_controls:
             controls_html = f'''
-            <div class="inline-flex items-center space-x-1 mr-2">
-                <button type="button" class="px-2.5 py-1 text-xs rounded bg-slate-800 text-slate-300 hover:bg-slate-700 moveup" data-id="{position.id}" {up}><i class="fa-solid fa-arrow-up"></i></button>
-                <button type="button" class="px-2.5 py-1 text-xs rounded bg-slate-800 text-slate-300 hover:bg-slate-700 movedown" data-id="{position.id}" {down}><i class="fa-solid fa-arrow-down"></i></button>
+            <div class="inline-flex items-center space-x-1.5 mr-2">
+                <button type="button" class="px-3 py-1.5 text-xs rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 moveup" data-id="{position.id}" {up}><i class="fa-solid fa-arrow-up text-indigo-400"></i></button>
+                <button type="button" class="px-3 py-1.5 text-xs rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 movedown" data-id="{position.id}" {down}><i class="fa-solid fa-arrow-down text-indigo-400"></i></button>
             </div>
             '''
 
         output += f'''
-        <div class="glass-card rounded-2xl p-5 mb-6 border border-slate-800" id="{position.id}">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-slate-800/80 gap-2">
+        <div class="glass-card-elevated rounded-3xl p-6 mb-6 border border-slate-800 shadow-xl" id="{position.id}">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-800/80 gap-3">
                 <div>
-                    <h3 class="text-lg font-bold text-white tracking-tight flex items-center">
-                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 mr-2"></span> {name}
+                    <h3 class="text-lg font-bold text-white tracking-tight flex items-center font-display">
+                        <span class="w-3 h-3 rounded-full bg-indigo-500 mr-2.5"></span> {name}
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">{instruction}</p>
                 </div>
                 <div class="flex items-center space-x-3">
                     {controls_html}
-                    <button type="button" class="px-3 py-1.5 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors reset" data-desc="{position_name}">
-                        <i class="fa-solid fa-rotate-left mr-1"></i> Reset Selection
+                    <button type="button" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors reset" data-desc="{position_name}">
+                        <i class="fa-solid fa-rotate-left mr-1.5 text-xs"></i> Reset Selection
                     </button>
                 </div>
             </div>
@@ -278,23 +278,22 @@ def preview_vote(request):
                     response = "You can only choose " + \
                         str(max_vote) + " candidates for " + position.name
                 else:
-                    # for key, value in form.items():
                     start_tag = f"""
-                       <div class='row votelist' style='padding-bottom: 2px'>
-		                      	<span class='col-sm-4'><span class='pull-right'><b>{position.name} :</b></span></span>
-		                      	<span class='col-sm-8'>
-                                <ul style='list-style-type:none; margin-left:-40px'>
-                                
-                    
+                       <div class='p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2 mb-3'>
+		                      	<div class='flex items-center justify-between pb-2 border-b border-slate-800'>
+                                    <span class='font-bold text-white font-display text-sm'>{position.name}</span>
+                                    <span class='text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20'>Multiple Select</span>
+                                </div>
+                                <ul class='space-y-1.5 pt-1'>
                     """
-                    end_tag = "</ul></span></div><hr/>"
+                    end_tag = "</ul></div>"
                     data = ""
                     for form_candidate_id in form_position:
                         try:
                             candidate = Candidate.objects.get(
                                 id=form_candidate_id, position=position)
                             data += f"""
-		                      	<li><i class="fa fa-check-square-o"></i> {candidate.fullname}</li>
+		                      	<li class='flex items-center text-xs font-bold text-emerald-400'><i class="fa-solid fa-square-check text-emerald-400 mr-2 text-sm"></i> {candidate.fullname}</li>
                             """
                         except:
                             error = True
@@ -311,11 +310,15 @@ def preview_vote(request):
                     candidate = Candidate.objects.get(
                         position=position, id=form_position)
                     output += f"""
-                            <div class='row votelist' style='padding-bottom: 2px'>
-		                      	<span class='col-sm-4'><span class='pull-right'><b>{position.name} :</b></span></span>
-		                      	<span class='col-sm-8'><i class="fa fa-check-circle-o"></i> {candidate.fullname}</span>
-		                    </div>
-                      <hr/>
+                        <div class='p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2 mb-3'>
+                            <div class='flex items-center justify-between pb-2 border-b border-slate-800'>
+                                <span class='font-bold text-white font-display text-sm'>{position.name}</span>
+                                <span class='text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20'>Single Choice</span>
+                            </div>
+                            <div class='flex items-center text-xs font-bold text-emerald-400 pt-1'>
+                                <i class="fa-solid fa-circle-check text-emerald-400 mr-2 text-sm"></i> {candidate.fullname}
+                            </div>
+                        </div>
                     """
                 except Exception as e:
                     error = True

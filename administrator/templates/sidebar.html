@@ -1,52 +1,52 @@
 {% load static %}
-<div class="bg-slate-900/60 border-b border-slate-800 px-4 sm:px-6 py-2.5 overflow-x-auto scrollbar-none">
+<div class="bg-[#0b1120]/80 border-b border-slate-800/80 px-4 sm:px-8 py-2 overflow-x-auto scrollbar-none">
   <div class="max-w-7xl mx-auto flex items-center justify-between min-w-max space-x-6 text-xs">
     
-    <div class="flex items-center space-x-1 sm:space-x-2">
+    <div class="flex items-center space-x-1.5 sm:space-x-2">
       {% if request.user.user_type == '1' %}
       <!-- Admin Navigation Tabs -->
-      <a href="{% url 'adminDashboard' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-chart-line text-indigo-400 mr-2"></i>
+      <a href="{% url 'adminDashboard' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold transition-all {% if page_title == 'Dashboard' %}bg-indigo-600/20 text-indigo-300 border border-indigo-500/30{% else %}text-slate-400 hover:text-white hover:bg-slate-800/60{% endif %}">
+        <i class="fa-solid fa-chart-pie text-indigo-400 mr-2 text-sm"></i>
         <span>Dashboard</span>
       </a>
 
-      <a href="{% url 'viewVotes' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-check-double text-purple-400 mr-2"></i>
+      <a href="{% url 'viewVotes' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold transition-all {% if page_title == 'Votes' %}bg-purple-600/20 text-purple-300 border border-purple-500/30{% else %}text-slate-400 hover:text-white hover:bg-slate-800/60{% endif %}">
+        <i class="fa-solid fa-check-double text-purple-400 mr-2 text-sm"></i>
         <span>Votes Tally</span>
       </a>
 
-      <a href="{% url 'adminViewVoters' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-users text-emerald-400 mr-2"></i>
+      <a href="{% url 'adminViewVoters' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold transition-all {% if page_title == 'Voters List' %}bg-emerald-600/20 text-emerald-300 border border-emerald-500/30{% else %}text-slate-400 hover:text-white hover:bg-slate-800/60{% endif %}">
+        <i class="fa-solid fa-users text-emerald-400 mr-2 text-sm"></i>
         <span>Manage Voters</span>
       </a>
 
-      <a href="{% url 'viewPositions' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-layer-group text-amber-400 mr-2"></i>
+      <a href="{% url 'viewPositions' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold transition-all {% if page_title == 'Positions' %}bg-amber-600/20 text-amber-300 border border-amber-500/30{% else %}text-slate-400 hover:text-white hover:bg-slate-800/60{% endif %}">
+        <i class="fa-solid fa-layer-group text-amber-400 mr-2 text-sm"></i>
         <span>Positions</span>
       </a>
 
-      <a href="{% url 'viewCandidates' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-user-tie text-cyan-400 mr-2"></i>
+      <a href="{% url 'viewCandidates' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold transition-all {% if page_title == 'Candidates' %}bg-cyan-600/20 text-cyan-300 border border-cyan-500/30{% else %}text-slate-400 hover:text-white hover:bg-slate-800/60{% endif %}">
+        <i class="fa-solid fa-user-tie text-cyan-400 mr-2 text-sm"></i>
         <span>Candidates</span>
       </a>
 
-      <a href="{% url 'ballot_position' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-sliders text-pink-400 mr-2"></i>
+      <a href="{% url 'ballot_position' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold transition-all {% if page_title == 'Ballot Position' %}bg-pink-600/20 text-pink-300 border border-pink-500/30{% else %}text-slate-400 hover:text-white hover:bg-slate-800/60{% endif %}">
+        <i class="fa-solid fa-sliders text-pink-400 mr-2 text-sm"></i>
         <span>Ballot Layout</span>
       </a>
       {% else %}
       <!-- Voter Navigation -->
-      <a href="{% url 'voterDashboard' %}" class="nav-tab inline-flex items-center px-3 py-1.5 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-        <i class="fa-solid fa-vote-yea text-indigo-400 mr-2"></i>
+      <a href="{% url 'voterDashboard' %}" class="inline-flex items-center px-3.5 py-2 rounded-xl font-semibold bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 transition-all">
+        <i class="fa-solid fa-vote-yea text-indigo-400 mr-2 text-sm"></i>
         <span>Voting Portal</span>
       </a>
       {% endif %}
     </div>
 
-    <!-- Active Route Highlight Helper -->
-    <div class="text-[11px] text-slate-500 hidden lg:block">
-      <span class="font-semibold text-slate-400">Status:</span> 
-      {% if request.user.user_type == '1' %}Admin Control Center{% else %}Voter Session Active{% endif %}
+    <!-- Active Mode Status Indicator -->
+    <div class="text-[11px] text-slate-400 font-medium hidden lg:flex items-center space-x-2 bg-slate-900/90 px-3 py-1 rounded-lg border border-slate-800">
+      <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+      <span>{% if request.user.user_type == '1' %}Admin Control Active{% else %}Voter Mode Active{% endif %}</span>
     </div>
 
   </div>
