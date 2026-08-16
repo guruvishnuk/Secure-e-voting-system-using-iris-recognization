@@ -2,15 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "e_voting/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb" }
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "e_voting/wsgi.py"
+      "dest": "api/index.py"
     }
   ]
 }

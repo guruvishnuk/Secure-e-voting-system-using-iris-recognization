@@ -25,8 +25,7 @@ SECRET_KEY = '%6lp_p!%r$7t-2ql5hc5(r@)8u_fc+6@ugxcnz=h=b(fn#3$p9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -77,25 +76,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'e_voting.wsgi.application'
 
+import shutil
+DB_PATH = BASE_DIR / 'db.sqlite3'
+TMP_DB_PATH = Path('/tmp/db.sqlite3')
 
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+if os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+    if DB_PATH.exists() and not TMP_DB_PATH.exists():
+        try:
+            shutil.copyfile(DB_PATH, TMP_DB_PATH)
+        except Exception:
+            pass
+    DB_NAME = TMP_DB_PATH if TMP_DB_PATH.exists() else DB_PATH
+else:
+    DB_NAME = DB_PATH
 
 DATABASES = {
-    #   You can use this :
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_NAME,
     }
-
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'e_voting',
-    #     'HOST': '127.0.0.1',
-    #     'USER': 'root',
-    #     'PASSWORD': ''
-    # }
 }
+
+
 
 
 # Password validation
