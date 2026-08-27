@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'account.middleware.AccountCheckMiddleWare',
+    'account.exception_middleware.ExceptionLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'e_voting.urls'
