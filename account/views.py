@@ -13,7 +13,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import login
 # Import the Voter model
-import cv2
+try:
+    import cv2
+except ImportError:
+    cv2 = None
 import os
 from django.conf import settings
 
@@ -106,6 +109,9 @@ def verify_iris_image(iris_image, user):
     This implementation assumes that the Iris image is stored in a specific location in the Voter model.
     """
     fs = FileSystemStorage()
+    if cv2 is None:
+        print("Error: OpenCV is not installed. Iris verification disabled.")
+        return False
     filename = fs.save(iris_image.name, iris_image)  # Save the uploaded Iris image temporarily
     uploaded_image_path = fs.url(filename)  # URL path (relative)
 
