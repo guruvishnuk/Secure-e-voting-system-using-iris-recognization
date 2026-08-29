@@ -13,10 +13,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import login
 # Import the Voter model
-try:
-    import cv2
-except ImportError:
-    cv2 = None
 import os
 from django.conf import settings
 
@@ -109,9 +105,6 @@ def verify_iris_image(iris_image, user):
     This implementation assumes that the Iris image is stored in a specific location in the Voter model.
     """
     fs = FileSystemStorage()
-    if cv2 is None:
-        print("Error: OpenCV is not installed. Iris verification disabled.")
-        return False
     filename = fs.save(iris_image.name, iris_image)  # Save the uploaded Iris image temporarily
     uploaded_image_path = fs.url(filename)  # URL path (relative)
 
@@ -121,11 +114,12 @@ def verify_iris_image(iris_image, user):
 
     print(f"Uploaded image path: {uploaded_image_abs_path}")  # Debug: Print the uploaded image path
 
-    # Step 1: Read the uploaded Iris image with OpenCV (convert to grayscale if needed)
-    uploaded_image = cv2.imread(uploaded_image_abs_path, cv2.IMREAD_GRAYSCALE)
+    from PIL import Image, ImageChops
 
-    if uploaded_image is None:
-        print("Error: Unable to load the uploaded image.")
+    try:
+        uploaded_image = Image.open(uploaded_image_abs_path).convert('L')
+    except Exception as e:
+        print(f"Error: Unable to load the uploaded image. {e}")
         # Delete the temporary uploaded image
         if os.path.exists(uploaded_image_abs_path):
             os.remove(uploaded_image_abs_path)
@@ -146,21 +140,22 @@ def verify_iris_image(iris_image, user):
 
     print(f"Registered image path: {registered_image_path}")  # Debug: Print the registered image path
 
-    # Step 3: Load the registered image (convert to grayscale if needed)
-    registered_image = cv2.imread(registered_image_path, cv2.IMREAD_GRAYSCALE)
-
-    if registered_image is None:
-        print("Error: Unable to load the registered image.")
+    try:
+        registered_image = Image.open(registered_image_path).convert('L')
+    except Exception as e:
+        print(f"Error: Unable to load the registered image. {e}")
         if os.path.exists(uploaded_image_abs_path):
             os.remove(uploaded_image_abs_path)
         return False
 
     # Step 4: Resize both images to the same size
-    uploaded_image_resized = cv2.resize(uploaded_image, (registered_image.shape[1], registered_image.shape[0]))
+    uploaded_image_resized = uploaded_image.resize(registered_image.size)
 
     # Step 5: Compare the uploaded and registered images (using absolute difference for simplicity)
-    diff = cv2.absdiff(uploaded_image_resized, registered_image)
-    non_zero_diff = cv2.countNonZero(diff)
+    diff = ImageChops.difference(uploaded_image_resized, registered_image)
+    
+    # Count non-zero pixels
+    non_zero_diff = sum(1 for p in diff.getdata() if p > 0)
 
     print(f"Non-zero difference: {non_zero_diff}")  # Debug: Print the pixel difference
 
