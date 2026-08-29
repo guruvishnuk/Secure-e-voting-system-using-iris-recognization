@@ -1,6 +1,5 @@
 Django>=4.2,<5.0
 setuptools
 Pillow>=10.0.0
-django-renderpdf>=3.0.0
+xhtml2pdf>=0.2.11
 requests>=2.31.0
-mysql-connector-python>=8.0.30
