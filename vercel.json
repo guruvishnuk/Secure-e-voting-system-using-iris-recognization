@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "e_voting/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.py"
+      "dest": "e_voting/wsgi.py"
     }
   ]
 }
