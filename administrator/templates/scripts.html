@@ -41,6 +41,17 @@
         $(this).addClass('bg-indigo-600/20 text-indigo-400 border border-indigo-500/30');
       }
     });
+
+    // Live System Clock
+    function updateLiveClock() {
+      const now = new Date();
+      const clockEl = document.getElementById('live-clock');
+      if(clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', { hour12: false }) + " UTC";
+    }
+    if (document.getElementById('live-clock')) {
+      setInterval(updateLiveClock, 1000);
+      updateLiveClock();
+    }
   });
 </script>
 

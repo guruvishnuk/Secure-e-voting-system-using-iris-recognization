@@ -36,8 +36,11 @@
       </button>
       {% endif %}
 
-      <!-- System Status Badge -->
+      <!-- System Status Badge & Clock -->
       <div class="hidden md:flex items-center space-x-2">
+        <span id="live-clock" class="px-3 py-1 rounded text-xs font-mono font-bold text-indigo-300 bg-indigo-900/30 border border-indigo-500/20">
+          00:00:00
+        </span>
         <span class="px-2 py-1 rounded text-[10px] font-mono font-semibold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700">
           v1.0.4-stable
         </span>
